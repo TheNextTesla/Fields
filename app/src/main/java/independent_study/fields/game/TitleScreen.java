@@ -30,7 +30,14 @@ public class TitleScreen extends Screen
 
     private Bitmap createTitleBitmap()
     {
+        int[] imagePixels = new int[Configuration.GAME_HEIGHT * Configuration.GAME_WIDTH];
+        for(int i = 0; i < imagePixels.length; i++)
+        {
+            imagePixels[i] = 0xffffff;
+        }
 
+        Bitmap tempBitmap = Bitmap.createBitmap(imagePixels, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, Bitmap.Config.ARGB_8888);
+        return tempBitmap;
     }
 
     public void update(float deltaTime)
