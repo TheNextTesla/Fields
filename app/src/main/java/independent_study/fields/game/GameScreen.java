@@ -1,6 +1,8 @@
 package independent_study.fields.game;
 
 import android.app.FragmentManager;
+import android.graphics.Color;
+import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
@@ -14,9 +16,11 @@ import independent_study.fields.sprites.PlayerSprite;
 
 public class GameScreen extends Screen
 {
-    AndroidGraphics graphics;
-    PlayerSprite playerSprite;
-    ObstacleSpriteManager obstacleSpriteManager;
+    private static final String LOG_TAG = "GameScreen";
+
+    private AndroidGraphics graphics;
+    private PlayerSprite playerSprite;
+    private ObstacleSpriteManager obstacleSpriteManager;
 
     public GameScreen(AndroidGame game)
     {
@@ -24,6 +28,8 @@ public class GameScreen extends Screen
         graphics = game.getGraphics();
         playerSprite = new PlayerSprite();
         obstacleSpriteManager = new ObstacleSpriteManager(0, 0);
+
+        Log.d(LOG_TAG, "Constructed");
     }
 
     public void update(float deltaTime)
@@ -33,7 +39,7 @@ public class GameScreen extends Screen
 
     public void paint(float deltaTime)
     {
-
+        graphics.clearScreen(Color.GREEN);
     }
 
     public void pause()

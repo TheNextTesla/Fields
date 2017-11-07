@@ -1,6 +1,9 @@
 package independent_study.fields.game;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.List;
 
@@ -16,6 +19,8 @@ import independent_study.fields.framework.Screen;
 
 public class TitleScreen extends Screen
 {
+    private static final String LOG_TAG = "TitleScreen";
+
     private AndroidImage androidImage;
     private AndroidGraphics androidGraphics;
 
@@ -25,22 +30,12 @@ public class TitleScreen extends Screen
     public TitleScreen(AndroidGame game)
     {
         super(game);
-        androidImage = new AndroidImage(createTitleBitmap(), AndroidGraphics.ImageFormat.ARGB8888);
+        //androidImage = new AndroidImage(createTitleBitmap(), AndroidGraphics.ImageFormat.RGB565);
         androidGraphics = game.getGraphics();
 
         gameWidth = androidGraphics.getWidth();
         gameHeight = androidGraphics.getHeight();
-    }
-
-    private Bitmap createTitleBitmap()
-    {
-        int[] imagePixels = new int[Configuration.GAME_HEIGHT * Configuration.GAME_WIDTH];
-        for(int i = 0; i < imagePixels.length; i++)
-        {
-            imagePixels[i] = 0xff00ff;
-        }
-
-        return Bitmap.createBitmap(imagePixels, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, Bitmap.Config.ARGB_8888);
+        Log.d(LOG_TAG, "Constructed");
     }
 
     public void update(float deltaTime)
@@ -50,11 +45,13 @@ public class TitleScreen extends Screen
         {
             game.setScreen(new GameScreen(game));
         }
+        Log.d(LOG_TAG, "update");
     }
 
     public void paint(float deltaTime)
     {
-        androidGraphics.drawImage(androidImage, 0, 0, gameWidth, gameHeight, gameWidth, gameHeight);
+        androidGraphics.clearScreen(Color.BLUE);
+        Log.d(LOG_TAG, "paint");
     }
 
     public void pause()
