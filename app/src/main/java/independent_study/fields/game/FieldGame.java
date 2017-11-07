@@ -9,8 +9,15 @@ import independent_study.fields.framework.Screen;
 
 public class FieldGame extends AndroidGame
 {
+    @Override
     public Screen getInitScreen()
     {
         return new TitleScreen(this);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        getCurrentScreen().backButton();
     }
 }

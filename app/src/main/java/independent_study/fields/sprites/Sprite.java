@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public abstract class Sprite
 {
     protected static ArrayList<Sprite> sprites = new ArrayList<>();
-    //protected static
 
     public static void updateAll()
     {
@@ -36,6 +35,14 @@ public abstract class Sprite
         }
     }
 
+    public static void destroyAll()
+    {
+        for(Sprite tempSprite : sprites)
+        {
+            tempSprite.destroy();
+        }
+    }
+
     protected Rect spriteBounds;
 
     protected Sprite(int left, int top, int right, int bottom)
@@ -47,5 +54,8 @@ public abstract class Sprite
     public abstract void update();
     public abstract boolean isTouching(Sprite other);
     public abstract void touched(Sprite other);
-    public abstract void destroy();
+    public void destroy()
+    {
+        sprites.remove(this);
+    }
 }

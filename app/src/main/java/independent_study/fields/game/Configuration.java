@@ -9,5 +9,7 @@ public final class Configuration
     public static final int GAME_WIDTH = 800;
     public static final int GAME_HEIGHT = 480;
 
+    public static final int FIELD_WIDTH = 700;
+
     private Configuration() {}
 }
