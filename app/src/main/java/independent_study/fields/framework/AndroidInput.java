@@ -1,6 +1,7 @@
 package independent_study.fields.framework;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build.VERSION;
 import android.view.View;
 
@@ -27,6 +28,17 @@ public class AndroidInput
 
     public int getTouchY(int pointer) {
         return touchHandler.getTouchY(pointer);
+    }
+
+    public boolean inRectBounds(TouchEvent event, Rect rect) {
+        return inBounds(event, rect.left, rect.top, rect.width(), rect.height());
+    }
+
+    public boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
+        if (event.x > x && event.x < x + width - 1 && event.y > y && event.y < y + height - 1)
+            return true;
+        else
+            return false;
     }
 
     public List<AndroidInput.TouchEvent> getTouchEvents() {

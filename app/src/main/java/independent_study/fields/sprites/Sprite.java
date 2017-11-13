@@ -4,6 +4,8 @@ import android.graphics.Rect;
 
 import java.util.ArrayList;
 
+import independent_study.fields.framework.AndroidGraphics;
+
 /**
  * Created by Blaine Huey on 11/1/2017.
  */
@@ -14,24 +16,25 @@ public abstract class Sprite
 
     public static void updateAll()
     {
-        for(int i = sprites.size(); i > 0; i--)
+        for(int i = sprites.size() - 1; i >= 0; i--)
         {
             for(int j = 0; j < i; j++)
             {
-                if(i == j)
+                if(sprites.get(i).isTouching(sprites.get(j)))
                 {
-                    continue;
-                }
-                else
-                {
-                    if(sprites.get(i).isTouching(sprites.get(j)));
-                    {
-                        sprites.get(i).touched(sprites.get(j));
-                    }
+                    sprites.get(i).touched(sprites.get(j));
                 }
             }
 
             sprites.get(i).update();
+        }
+    }
+
+    public static void paintAll()
+    {
+        for(int i = sprites.size() - 1; i >= 0; i--)
+        {
+            sprites.get(i).paint();
         }
     }
 
@@ -44,14 +47,17 @@ public abstract class Sprite
     }
 
     protected Rect spriteBounds;
+    protected AndroidGraphics androidGraphics;
 
-    protected Sprite(int left, int top, int right, int bottom)
+    protected Sprite(int left, int top, int right, int bottom, AndroidGraphics graphics)
     {
         sprites.add(this);
         spriteBounds = new Rect(left, top, right, bottom);
+        androidGraphics = graphics;
     }
 
     public abstract void update();
+    public abstract void paint();
     public abstract boolean isTouching(Sprite other);
     public abstract void touched(Sprite other);
     public void destroy()

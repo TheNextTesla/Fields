@@ -95,6 +95,10 @@ public class AndroidGraphics
         canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
     }
 
+    public void drawRectObject(Rect rect, int color) {
+        drawRect(rect.left, rect.top, rect.width(), rect.height(), color);
+    }
+
     public void drawARGB(int a, int r, int g, int b) {
         paint.setStyle(Style.FILL);
        canvas.drawARGB(a, r, g, b);

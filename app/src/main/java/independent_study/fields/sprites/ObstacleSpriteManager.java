@@ -2,6 +2,7 @@ package independent_study.fields.sprites;
 
 import java.util.ArrayList;
 
+import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -10,20 +11,22 @@ import independent_study.fields.game.Configuration;
 
 public class ObstacleSpriteManager
 {
-    private static final double DIFFICULTY_INCREMENT = 0.05;
-    private static final double STATE_FREQUENCY_CUTOFF = 5;
+    private static final double DIFFICULTY_INCREMENT = 0.001;
+    private static final double STATE_FREQUENCY_CUTOFF = 4;
     private static final double STATE_CLUSTERING_SPACING = 20;
 
     private double frequency;
     private double clustering;
     private ArrayList<ObstacleSprite> obstacles;
+    private AndroidGame androidGame;
 
-    public ObstacleSpriteManager(double startingFrequency, double startingClustering)
+    public ObstacleSpriteManager(double startingFrequency, double startingClustering, AndroidGame game)
     {
         frequency = startingFrequency;
         clustering = startingClustering;
-
         obstacles = updateObstacleList();
+
+        androidGame = game;
     }
 
     public void updateGenerateObstacle()
@@ -41,17 +44,38 @@ public class ObstacleSpriteManager
             {
                 if(randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
                 {
-                    obstacles.add(new ObstacleSprite(randomStartCoordinate - 20));
+                    obstacles.add(new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), androidGame.getGraphics()));
                 }
                 else
                 {
-                    obstacles.add(new ObstacleSprite(randomStartCoordinate + 20));
+                    obstacles.add(new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), androidGame.getGraphics()));
                 }
             }
         }
         else
         {
             incrementDifficulty();
+        }
+    }
+
+    public ArrayList<ObstacleSprite> getObstacles()
+    {
+        return obstacles;
+    }
+
+    public void updateAllObstacles()
+    {
+        for(ObstacleSprite obstacleSprite : getObstacles())
+        {
+            obstacleSprite.update();
+        }
+    }
+
+    public void paintAllObstacles()
+    {
+        for(ObstacleSprite obstacleSprite : getObstacles())
+        {
+            obstacleSprite.paint();
         }
     }
 
