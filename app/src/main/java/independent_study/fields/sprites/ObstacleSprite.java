@@ -2,6 +2,7 @@ package independent_study.fields.sprites;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGraphics;
@@ -17,6 +18,8 @@ public class ObstacleSprite extends Sprite
     public static final int DEFAULT_OBSTACLE_WIDTH = 20;
     public static final int DEFAULT_OBSTACLE_HEIGHT = 50;
     public static final int DEFAULT_OBSTACLE_SPEED = 1;
+    public static final Rect gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
+        (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2), Configuration.GAME_HEIGHT);
 
     private int obstacleWidth;
     private int obstacleHeight;
@@ -38,14 +41,13 @@ public class ObstacleSprite extends Sprite
     @Override
     public void update()
     {
-        if(spriteBounds.centerY() <= 0)
+        if(!spriteBounds.intersect(gameRegion))
         {
             destroy();
         }
         else
         {
             spriteBounds.offset(0, DEFAULT_OBSTACLE_SPEED);
-            Log.d("Obstacle Sprite", "Update " + this.toString());
         }
     }
 
@@ -58,7 +60,7 @@ public class ObstacleSprite extends Sprite
     @Override
     public boolean isTouching(Sprite other)
     {
-        return other.spriteBounds.intersect(spriteBounds);
+        return Rect.intersects(other.spriteBounds, this.spriteBounds);
     }
 
     @Override

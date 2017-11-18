@@ -14,6 +14,20 @@ public abstract class Sprite
 {
     protected static ArrayList<Sprite> sprites = new ArrayList<>();
 
+    public static void touchCheckAll()
+    {
+        for(int i = sprites.size() - 1; i >= 0; i--)
+        {
+            for(int j = 0; j < i; j++)
+            {
+                if(sprites.get(i).isTouching(sprites.get(j)))
+                {
+                    sprites.get(i).touched(sprites.get(j));
+                }
+            }
+        }
+    }
+
     public static void updateAll()
     {
         for(int i = sprites.size() - 1; i >= 0; i--)
@@ -53,6 +67,7 @@ public abstract class Sprite
     {
         sprites.add(this);
         spriteBounds = new Rect(left, top, right, bottom);
+        spriteBounds.sort();
         androidGraphics = graphics;
     }
 

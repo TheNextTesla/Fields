@@ -61,7 +61,7 @@ public class WallSprite extends Sprite
         }
         else if(other instanceof ObstacleSprite)
         {
-            destroy();
+            other.destroy();
         }
     }
 

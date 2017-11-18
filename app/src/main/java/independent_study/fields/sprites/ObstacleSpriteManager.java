@@ -36,7 +36,7 @@ public class ObstacleSpriteManager
         int randomStateClustering = (int) (Math.random() * clustering * 10);
         int randomStateFrequency = (int) (Math.random() * frequency * 10);
 
-        if(randomStateFrequency > STATE_FREQUENCY_CUTOFF)
+        if(randomStateFrequency + 2 > STATE_FREQUENCY_CUTOFF)
         {
             int randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
 
@@ -81,7 +81,7 @@ public class ObstacleSpriteManager
 
     private void incrementDifficulty()
     {
-        int randomState = (int) (Math.random() * 3);
+        int randomState = (int) (Math.random() * 3 - getDifficulty());
 
         if(!(getDifficulty() + DIFFICULTY_INCREMENT >= 1))
         {

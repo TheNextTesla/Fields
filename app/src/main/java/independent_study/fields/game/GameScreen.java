@@ -14,6 +14,7 @@ import independent_study.fields.framework.Screen;
 import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.ObstacleSpriteManager;
 import independent_study.fields.sprites.PlayerSprite;
+import independent_study.fields.sprites.Sprite;
 import independent_study.fields.sprites.WallSprite;
 
 /**
@@ -23,13 +24,11 @@ import independent_study.fields.sprites.WallSprite;
 public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
-    private enum CHARGE_STATE {POSITIVE, NUETRAL, NEGATIVE}
 
     private AndroidGraphics graphics;
     private AndroidInput input;
     private boolean wasTouchedDownLast;
     private boolean wasPositiveLast;
-    private CHARGE_STATE chargeState;
     private WallSprite wallSpriteL;
     private WallSprite wallSpriteR;
     private PlayerSprite playerSprite;
@@ -44,7 +43,7 @@ public class GameScreen extends Screen
         wasTouchedDownLast = false;
         wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, graphics);
         wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, graphics);
-        playerSprite = new PlayerSprite(graphics);
+        playerSprite = new PlayerSprite(game);
         obstacleSpriteManager = new ObstacleSpriteManager(0, 0, game);
 
         gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
@@ -58,6 +57,7 @@ public class GameScreen extends Screen
     public void update(float deltaTime)
     {
         boolean isTouchedDown = false;
+        boolean isTouchedUp = false;
         for(AndroidInput.TouchEvent touchEvent : input.getTouchEvents())
         {
             if(input.inRectBounds(touchEvent, gameRegion))
@@ -66,6 +66,10 @@ public class GameScreen extends Screen
                 {
                     isTouchedDown = true;
                 }
+                else if(touchEvent.type == AndroidInput.TouchEvent.TOUCH_UP)
+                {
+                    isTouchedUp = true;
+                }
                 else
                 {
                     Log.d(LOG_TAG, "Touch At X: " + touchEvent.x + " Y: " + touchEvent.y);
@@ -73,27 +77,44 @@ public class GameScreen extends Screen
             }
         }
 
-        if(isTouchedDown && !wasTouchedDownLast)
+        if(isTouchedDown)
         {
-            chargeState = CHARGE_STATE.NUETRAL;
+            playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NUETRAL);
         }
-        else if(!isTouchedDown && wasTouchedDownLast)
+        else if(isTouchedUp)
         {
             if(wasPositiveLast)
             {
-                chargeState = CHARGE_STATE.NEGATIVE;
+                playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NEGATIVE);
+                wasPositiveLast = false;
             }
             else
             {
-                chargeState = CHARGE_STATE.POSITIVE;
+                playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.POSITIVE);
+                wasPositiveLast = true;
             }
         }
+
+        /*
+        else if(!isTouchedDown && wasTouchedDownLast)
+        {
+
+        }
+        */
+
+        wasTouchedDownLast = isTouchedDown;
+
+        graphics.clearScreen(Color.GRAY);
+
+        Log.d(LOG_TAG, "WallSprite Touching Player: " + playerSprite.isTouching(wallSpriteR));
 
         playerSprite.update();
         wallSpriteR.update();
         wallSpriteL.update();
         obstacleSpriteManager.updateGenerateObstacle();
         obstacleSpriteManager.updateAllObstacles();
+        Sprite.touchCheckAll();
+        System.gc();
     }
 
     public void paint(float deltaTime)
