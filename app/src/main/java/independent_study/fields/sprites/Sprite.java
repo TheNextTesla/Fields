@@ -1,6 +1,7 @@
 package independent_study.fields.sprites;
 
 import android.graphics.Rect;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -16,13 +17,16 @@ public abstract class Sprite
 
     public static void touchCheckAll()
     {
-        for(int i = sprites.size() - 1; i >= 0; i--)
+        for(Sprite spriteA : sprites)
         {
-            for(int j = 0; j < i; j++)
+            for(Sprite spriteB : sprites)
             {
-                if(sprites.get(i).isTouching(sprites.get(j)))
+                if(spriteA == spriteB)
+                    continue;
+
+                if(spriteA.isTouching(spriteB))
                 {
-                    sprites.get(i).touched(sprites.get(j));
+                    spriteA.touched(spriteB);
                 }
             }
         }
@@ -77,6 +81,6 @@ public abstract class Sprite
     public abstract void touched(Sprite other);
     public void destroy()
     {
-        sprites.remove(this);
+        Log.d("Sprite", "remove? " + sprites.remove(this));
     }
 }

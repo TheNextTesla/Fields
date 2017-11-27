@@ -42,13 +42,31 @@ public class ObstacleSpriteManager
 
             for(int i = 0; i < randomStateClustering / 3; i++)
             {
+                ObstacleSprite tempObstacleSprite = null;
                 if(randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
                 {
-                    obstacles.add(new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), androidGame.getGraphics()));
+                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), androidGame.getGraphics());
                 }
                 else
                 {
-                    obstacles.add(new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), androidGame.getGraphics()));
+                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), androidGame.getGraphics());
+                }
+
+                if(tempObstacleSprite != null)
+                {
+                    boolean wouldInterfere = false;
+                    for(ObstacleSprite otherObstacleSprite : obstacles)
+                    {
+                        if(otherObstacleSprite.isTouching(tempObstacleSprite))
+                        {
+                            wouldInterfere = true;
+                        }
+                    }
+
+                    if(!wouldInterfere)
+                    {
+                        obstacles.add(tempObstacleSprite);
+                    }
                 }
             }
         }
@@ -76,6 +94,15 @@ public class ObstacleSpriteManager
         for(ObstacleSprite obstacleSprite : getObstacles())
         {
             obstacleSprite.paint();
+        }
+    }
+
+    public void deleteAllObstacles()
+    {
+        obstacles = updateObstacleList();
+        for(ObstacleSprite obstacleSprite : obstacles)
+        {
+            obstacleSprite.destroy();
         }
     }
 

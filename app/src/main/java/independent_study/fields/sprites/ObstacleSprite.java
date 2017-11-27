@@ -23,12 +23,14 @@ public class ObstacleSprite extends Sprite
 
     private int obstacleWidth;
     private int obstacleHeight;
+    private boolean wasTouched;
 
     public ObstacleSprite(int left, int top, int right, int bottom, AndroidGraphics graphics)
     {
         super(left, top, right, bottom, graphics);
         obstacleWidth = Math.abs(left - right);
         obstacleHeight = Math.abs(top - bottom);
+        wasTouched = false;
     }
 
     public ObstacleSprite(int topPixelStart, AndroidGraphics graphics)
@@ -41,7 +43,7 @@ public class ObstacleSprite extends Sprite
     @Override
     public void update()
     {
-        if(!spriteBounds.intersect(gameRegion))
+        if(!Rect.intersects(spriteBounds, gameRegion) || wasTouched)
         {
             destroy();
         }
@@ -68,17 +70,11 @@ public class ObstacleSprite extends Sprite
     {
         if(other instanceof WallSprite)
         {
-            destroy();
+            wasTouched = true;
         }
         else if(other instanceof ObstacleSprite)
         {
-            destroy();
+            wasTouched = true;
         }
-    }
-
-    @Override
-    public void destroy()
-    {
-
     }
 }

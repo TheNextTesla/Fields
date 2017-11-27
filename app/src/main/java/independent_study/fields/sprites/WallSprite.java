@@ -55,19 +55,12 @@ public class WallSprite extends Sprite
     @Override
     public void touched(Sprite other)
     {
-        if(other instanceof WallSprite)
-        {
-            destroy();
-        }
-        else if(other instanceof ObstacleSprite)
-        {
-            other.destroy();
-        }
+        //Other Sprites Run the Check Operations When They Touch This
     }
 
     @Override
     public void destroy()
     {
-
+        super.destroy();
     }
 }

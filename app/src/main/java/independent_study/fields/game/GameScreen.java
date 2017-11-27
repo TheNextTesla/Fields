@@ -106,7 +106,7 @@ public class GameScreen extends Screen
 
         graphics.clearScreen(Color.GRAY);
 
-        Log.d(LOG_TAG, "WallSprite Touching Player: " + playerSprite.isTouching(wallSpriteR));
+        //Log.d(LOG_TAG, "WallSprite Touching Player: " + playerSprite.isTouching(wallSpriteR));
 
         playerSprite.update();
         wallSpriteR.update();
@@ -137,7 +137,10 @@ public class GameScreen extends Screen
 
     public void dispose()
     {
-
+        //playerSprite.destroy(); - Player Sprite Destruction Triggers This
+        wallSpriteR.destroy();
+        wallSpriteL.destroy();
+        obstacleSpriteManager.deleteAllObstacles();
     }
 
     public void backButton()

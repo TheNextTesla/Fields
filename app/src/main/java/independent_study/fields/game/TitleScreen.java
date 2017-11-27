@@ -40,18 +40,26 @@ public class TitleScreen extends Screen
 
     public void update(float deltaTime)
     {
-        List<AndroidInput.TouchEvent> touchEvents = game.getInput().getTouchEvents();
-        if(touchEvents.size() > 0)
+        boolean touchTriggered = false;
+        for(AndroidInput.TouchEvent event : game.getInput().getTouchEvents())
+        {
+            if(event.type == AndroidInput.TouchEvent.TOUCH_DOWN)
+            {
+                touchTriggered = true;
+            }
+        }
+
+        if(touchTriggered)
         {
             game.setScreen(new GameScreen(game));
         }
-        Log.d(LOG_TAG, "update");
+        //Log.d(LOG_TAG, "update");
     }
 
     public void paint(float deltaTime)
     {
         androidGraphics.clearScreen(Color.BLUE);
-        Log.d(LOG_TAG, "paint");
+        //Log.d(LOG_TAG, "paint");
     }
 
     public void pause()

@@ -9,6 +9,7 @@ import android.util.Log;
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidImage;
+import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
 import independent_study.fields.game.GameOverScreen;
 
@@ -31,6 +32,7 @@ public class PlayerSprite extends Sprite
 
     private int playerWidth;
     private int playerHeight;
+    private boolean wasTouched;
     private double playerVelocity;
     private long lastPlayerUpdateTime;
     private CHARGE_STATE chargeState;
@@ -42,6 +44,7 @@ public class PlayerSprite extends Sprite
 
         playerWidth = Math.abs(left - right);
         playerHeight = Math.abs(top - bottom);
+        wasTouched = false;
         playerVelocity = 0;
         lastPlayerUpdateTime = System.nanoTime();
         chargeState = CHARGE_STATE.POSITIVE;
@@ -64,31 +67,38 @@ public class PlayerSprite extends Sprite
     @Override
     public void update()
     {
-        if(System.nanoTime() - lastPlayerUpdateTime > 1_000_000_000L)
+        if(!wasTouched)
         {
-            lastPlayerUpdateTime = System.nanoTime();
-        }
+            if (System.nanoTime() - lastPlayerUpdateTime > 1_000_000_000L)
+            {
+                lastPlayerUpdateTime = System.nanoTime();
+            }
 
-        if(chargeState == CHARGE_STATE.POSITIVE)
-        {
-            double acceleration = ((PLATE_CHARGE_DENSITY / EPSILON_0) * PLAYER_CHARGE) / PLAYER_MASS;
-            playerVelocity += acceleration * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0;
-            //Log.d(LOG_TAG, "Acceleration: " + Double.toString(acceleration));
-        }
-        else if(chargeState == CHARGE_STATE.NEGATIVE)
-        {
-            double acceleration = ((PLATE_CHARGE_DENSITY / EPSILON_0) * PLAYER_CHARGE) / PLAYER_MASS;
-            playerVelocity -= acceleration * ((System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0);
-            //Log.d(LOG_TAG, "Acceleration: " + Double.toString(acceleration));
+            if (chargeState == CHARGE_STATE.POSITIVE)
+            {
+                double acceleration = ((PLATE_CHARGE_DENSITY / EPSILON_0) * PLAYER_CHARGE) / PLAYER_MASS;
+                playerVelocity += acceleration * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0;
+                //Log.d(LOG_TAG, "Acceleration: " + Double.toString(acceleration));
+            }
+            else if (chargeState == CHARGE_STATE.NEGATIVE)
+            {
+                double acceleration = ((PLATE_CHARGE_DENSITY / EPSILON_0) * PLAYER_CHARGE) / PLAYER_MASS;
+                playerVelocity -= acceleration * ((System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0);
+                //Log.d(LOG_TAG, "Acceleration: " + Double.toString(acceleration));
+            }
+            else
+            {
+                //Acceleration is 0, No Velocity Changes
+            }
+
+            spriteBounds.offset((int) Math.round(playerVelocity * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0), 0);
+            lastPlayerUpdateTime = System.nanoTime();
+            //Log.d(LOG_TAG, "Velocity: " + Double.toString(playerVelocity));
         }
         else
         {
-            //Acceleration is 0, No Velocity Changes
+            destroy();
         }
-
-        spriteBounds.offset((int) Math.round(playerVelocity * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0), 0);
-        lastPlayerUpdateTime = System.nanoTime();
-        //Log.d(LOG_TAG, "Velocity: " + Double.toString(playerVelocity));
     }
 
     @Override
@@ -111,26 +121,6 @@ public class PlayerSprite extends Sprite
     @Override
     public boolean isTouching(Sprite other)
     {
-        /*
-        //http://www.geeksforgeeks.org/find-two-rectangles-overlap/
-        Point otherPointLT = new Point(other.spriteBounds.left, other.spriteBounds.top);
-        Point otherPointRB = new Point(other.spriteBounds.right, other.spriteBounds.bottom);
-        Point thisPointLT  = new Point(this.spriteBounds.left, this.spriteBounds.top);
-        Point thisPointRB = new Point(this.spriteBounds.right, this.spriteBounds.bottom);
-
-        if (otherPointLT.x >= thisPointRB.x || thisPointLT.x >= otherPointRB.x)
-        {
-            Log.d(LOG_TAG, "Point Not Touching X");
-            return false;
-        }
-
-        if (otherPointLT.y < thisPointRB.y || thisPointLT.y < otherPointRB.y)
-        {
-            Log.d(LOG_TAG, "Point Not Touching Y :" + (otherPointLT.y < thisPointRB.y) + " :" + (thisPointLT.y < otherPointRB.y));
-            return false;
-        }
-        */
-        //return Rect.intersects(other.spriteBounds, this.spriteBounds) || this.spriteBounds.contains(other.spriteBounds);
         return Rect.intersects(other.spriteBounds, this.spriteBounds);
     }
 
@@ -146,13 +136,14 @@ public class PlayerSprite extends Sprite
         }
         else if(other instanceof ObstacleSprite)
         {
-            destroy();
+            wasTouched = true;
         }
     }
 
     @Override
     public void destroy()
     {
+        super.destroy();
         androidGame.setScreen(new GameOverScreen(androidGame));
     }
 }

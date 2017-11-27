@@ -21,12 +21,13 @@ public class GameOverScreen extends Screen
         super(game);
 
         titlePaint = new Paint();
-        titlePaint.setTextSize(30);
+        titlePaint.setTextSize(100);
         titlePaint.setTextAlign(Paint.Align.CENTER);
         titlePaint.setAntiAlias(true);
         titlePaint.setColor(Color.WHITE);
 
-        subTitlePaint.setTextSize(100);
+        subTitlePaint = new Paint();
+        subTitlePaint.setTextSize(30);
         subTitlePaint.setTextAlign(Paint.Align.CENTER);
         subTitlePaint.setAntiAlias(true);
         subTitlePaint.setColor(Color.WHITE);
@@ -34,12 +35,18 @@ public class GameOverScreen extends Screen
 
     public void update(float deltaTime)
     {
+        boolean touchTriggered = false;
         for(AndroidInput.TouchEvent event : game.getInput().getTouchEvents())
         {
             if(event.type == AndroidInput.TouchEvent.TOUCH_DOWN)
             {
-                game.setScreen(new TitleScreen(game));
+                touchTriggered = true;
             }
+        }
+
+        if(touchTriggered)
+        {
+            game.setScreen(new TitleScreen(game));
         }
     }
 
