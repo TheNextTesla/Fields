@@ -17,20 +17,22 @@ public class WallSprite extends Sprite
 
     private int wallWidth;
     private int wallHeight;
+    private boolean positive;
 
-    public WallSprite(int left, int top, int right, int bottom, AndroidGraphics graphics)
+    public WallSprite(int left, int top, int right, int bottom, boolean isPositive, AndroidGraphics graphics)
     {
         super(left, top, right, bottom, graphics);
 
         wallWidth = Math.abs(left - right);
         wallHeight = Math.abs(top - bottom);
+        positive = isPositive;
     }
 
     public static WallSprite generateDefault(DEFAULT_WALL_TYPE defaultWallType, AndroidGraphics graphics)
     {
         return defaultWallType == DEFAULT_WALL_TYPE.LEFT ?
-            new WallSprite(0, 0, DEFAULT_WALL_WIDTH, Configuration.GAME_HEIGHT, graphics) :
-            new WallSprite(Configuration.GAME_WIDTH - DEFAULT_WALL_WIDTH, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, graphics);
+            new WallSprite(0, 0, DEFAULT_WALL_WIDTH, Configuration.GAME_HEIGHT, true, graphics) :
+            new WallSprite(Configuration.GAME_WIDTH - DEFAULT_WALL_WIDTH, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, false, graphics);
     }
 
     @Override
@@ -41,9 +43,15 @@ public class WallSprite extends Sprite
 
     @Override
     public void paint()
-
     {
-        androidGraphics.drawRectObject(spriteBounds, Color.BLACK);
+        if(positive)
+        {
+            androidGraphics.drawRectObject(spriteBounds, Color.RED);
+        }
+        else
+        {
+            androidGraphics.drawRectObject(spriteBounds, Color.BLUE);
+        }
     }
 
     @Override

@@ -1,8 +1,11 @@
 package independent_study.fields.sprites;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -11,6 +14,8 @@ import independent_study.fields.game.Configuration;
 
 public class ObstacleSpriteManager
 {
+    public static final String LOG_TAG = "ObstacleSpriteManager";
+
     private static final double DIFFICULTY_INCREMENT = 0.001;
     private static final double STATE_FREQUENCY_CUTOFF = 4;
     private static final double STATE_CLUSTERING_SPACING = 20;
@@ -29,12 +34,20 @@ public class ObstacleSpriteManager
         androidGame = game;
     }
 
+    public ObstacleSpriteManager(AndroidGame game)
+    {
+        this(0.31, 0.1, game);
+    }
+
     public void updateGenerateObstacle()
     {
         obstacles = updateObstacleList();
 
         int randomStateClustering = (int) (Math.random() * clustering * 10);
         int randomStateFrequency = (int) (Math.random() * frequency * 10);
+
+        //Log.d(LOG_TAG, "Frequency Double: " + Math.random() * frequency * 10);
+        //Log.d(LOG_TAG, "Frequency: " + frequency);
 
         if(randomStateFrequency + 2 > STATE_FREQUENCY_CUTOFF)
         {
@@ -57,7 +70,7 @@ public class ObstacleSpriteManager
                     boolean wouldInterfere = false;
                     for(ObstacleSprite otherObstacleSprite : obstacles)
                     {
-                        if(otherObstacleSprite.isTouching(tempObstacleSprite))
+                        if(otherObstacleSprite.isTouching(tempObstacleSprite) && otherObstacleSprite != tempObstacleSprite)
                         {
                             wouldInterfere = true;
                         }
@@ -66,6 +79,7 @@ public class ObstacleSpriteManager
                     if(!wouldInterfere)
                     {
                         obstacles.add(tempObstacleSprite);
+                        //Log.d(LOG_TAG, "New Obstacle Added");
                     }
                 }
             }
@@ -108,7 +122,7 @@ public class ObstacleSpriteManager
 
     private void incrementDifficulty()
     {
-        int randomState = (int) (Math.random() * 3 - getDifficulty());
+        int randomState = (int) (Math.random() * 50 - getDifficulty()); //Originally 3
 
         if(!(getDifficulty() + DIFFICULTY_INCREMENT >= 1))
         {

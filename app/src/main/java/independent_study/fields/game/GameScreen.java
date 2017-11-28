@@ -1,11 +1,15 @@
 package independent_study.fields.game;
 
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
@@ -24,35 +28,57 @@ import independent_study.fields.sprites.WallSprite;
 public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
+    private static final String HIGH_SCORE_TAG = "HighScore";
 
     private AndroidGraphics graphics;
     private AndroidInput input;
-    private boolean wasTouchedDownLast;
     private boolean wasPositiveLast;
+    private long startTime;
+    private long score;
     private WallSprite wallSpriteL;
     private WallSprite wallSpriteR;
     private PlayerSprite playerSprite;
     private ObstacleSpriteManager obstacleSpriteManager;
     private Rect gameRegion;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor settingsEditor;
+    private Paint scorePaint;
 
     public GameScreen(AndroidGame game)
     {
         super(game);
         input = game.getInput();
         graphics = game.getGraphics();
-        wasTouchedDownLast = false;
         wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, graphics);
         wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, graphics);
         playerSprite = new PlayerSprite(game);
-        obstacleSpriteManager = new ObstacleSpriteManager(0, 0, game);
+        obstacleSpriteManager = new ObstacleSpriteManager(game);
 
         gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
                 (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2),
                 Configuration.GAME_HEIGHT);
 
+        //https://stackoverflow.com/questions/5051739/android-setting-preferences-programmatically
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
+        settingsEditor = sharedPreferences.edit();
+        if(sharedPreferences.getLong(HIGH_SCORE_TAG, -1) == -1L)
+        {
+            settingsEditor.putLong(HIGH_SCORE_TAG, 0L);
+            settingsEditor.apply();
+        }
+
+        scorePaint = new Paint();
+        scorePaint.setTextSize(20);
+        scorePaint.setTextAlign(Paint.Align.CENTER);
+        scorePaint.setAntiAlias(true);
+        scorePaint.setColor(Color.WHITE);
+
         graphics.clearScreen(Color.GRAY);
+
+        startTime = System.currentTimeMillis();
+        score = 0;
         Log.d(LOG_TAG, "Constructed");
-}
+    }
 
     public void update(float deltaTime)
     {
@@ -95,15 +121,6 @@ public class GameScreen extends Screen
             }
         }
 
-        /*
-        else if(!isTouchedDown && wasTouchedDownLast)
-        {
-
-        }
-        */
-
-        wasTouchedDownLast = isTouchedDown;
-
         graphics.clearScreen(Color.GRAY);
 
         //Log.d(LOG_TAG, "WallSprite Touching Player: " + playerSprite.isTouching(wallSpriteR));
@@ -114,6 +131,7 @@ public class GameScreen extends Screen
         obstacleSpriteManager.updateGenerateObstacle();
         obstacleSpriteManager.updateAllObstacles();
         Sprite.touchCheckAll();
+
         System.gc();
     }
 
@@ -123,6 +141,17 @@ public class GameScreen extends Screen
         wallSpriteL.paint();
         playerSprite.paint();
         obstacleSpriteManager.paintAllObstacles();
+
+        score = (long) Math.floor((System.currentTimeMillis() - startTime) / (1000.0));
+        graphics.drawString(String.format(Locale.US, "C-Score: %d", score), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
+
+        if(score > sharedPreferences.getLong(HIGH_SCORE_TAG, 0L))
+        {
+            settingsEditor.putLong(HIGH_SCORE_TAG, score);
+            settingsEditor.apply();
+        }
+
+        graphics.drawString(String.format(Locale.US, "H-Score: %d", sharedPreferences.getLong(HIGH_SCORE_TAG, 0L)), (Configuration.FIELD_WIDTH  - 15), 65, scorePaint);
     }
 
     public void pause()
