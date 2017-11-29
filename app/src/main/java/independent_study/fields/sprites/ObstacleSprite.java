@@ -3,6 +3,7 @@ package independent_study.fields.sprites;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.hardware.camera2.CameraConstrainedHighSpeedCaptureSession;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGraphics;
@@ -21,15 +22,13 @@ public class ObstacleSprite extends Sprite
     public static final Rect gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
         (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2), Configuration.GAME_HEIGHT);
 
-    private int obstacleWidth;
-    private int obstacleHeight;
+    private int speed;
     private boolean wasTouched;
 
     public ObstacleSprite(int left, int top, int right, int bottom, AndroidGraphics graphics)
     {
         super(left, top, right, bottom, graphics);
-        obstacleWidth = Math.abs(left - right);
-        obstacleHeight = Math.abs(top - bottom);
+        speed = DEFAULT_OBSTACLE_SPEED;
         wasTouched = false;
     }
 
@@ -49,7 +48,7 @@ public class ObstacleSprite extends Sprite
         }
         else
         {
-            spriteBounds.offset(0, DEFAULT_OBSTACLE_SPEED);
+            spriteBounds.offset(0, speed);
         }
     }
 
@@ -76,5 +75,10 @@ public class ObstacleSprite extends Sprite
         {
             wasTouched = true;
         }
+    }
+
+    public void setSpeed(int newSpeed)
+    {
+        speed = newSpeed;
     }
 }

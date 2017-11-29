@@ -1,15 +1,10 @@
 package independent_study.fields.sprites;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
-import independent_study.fields.framework.AndroidGraphics;
-import independent_study.fields.framework.AndroidImage;
-import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
 import independent_study.fields.game.GameOverScreen;
 
@@ -27,7 +22,7 @@ public class PlayerSprite extends Sprite
 
     public static final double EPSILON_0 = 8.854187e-12;
     public static final double PLAYER_CHARGE = 1.1e-1;
-    public static final double PLAYER_MASS = 7.8;
+    public static final double PLAYER_MASS = 0.8; //Old 7.8
     public static final double PLATE_CHARGE_DENSITY = 5.8e-8;
 
     private int playerWidth;
@@ -127,12 +122,30 @@ public class PlayerSprite extends Sprite
     @Override
     public void touched(Sprite other)
     {
-        Log.d(LOG_TAG, "Player Touched");
+        //Log.d(LOG_TAG, "Player Touched");
         if(other instanceof WallSprite)
         {
             //TODO: Revise Bounce Algorithm
-            spriteBounds.offset((int) -Math.ceil(Math.signum(playerVelocity) * 5), 0);
-            playerVelocity = -(playerVelocity / 5);
+            //spriteBounds.offset((int) -Math.ceil(Math.signum(playerVelocity) * 5), 0);
+            //spriteBounds.offset((int) -Math.ceil(playerVelocity / 20), 0);
+            //playerVelocity = -(playerVelocity / 5);
+            if(Math.abs(playerVelocity) < 100)
+            {
+                if (spriteBounds.centerX() > Configuration.GAME_WIDTH / 2)
+                {
+                    spriteBounds.offsetTo((Configuration.GAME_WIDTH - (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) - spriteBounds.width(), spriteBounds.top);
+                }
+                else
+                {
+                    spriteBounds.offsetTo((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, spriteBounds.top);
+                }
+                playerVelocity = 0;
+            }
+            else
+            {
+                spriteBounds.offset((int) -Math.ceil(playerVelocity / 20), 0);
+                playerVelocity = -(playerVelocity / 5);
+            }
         }
         else if(other instanceof ObstacleSprite)
         {

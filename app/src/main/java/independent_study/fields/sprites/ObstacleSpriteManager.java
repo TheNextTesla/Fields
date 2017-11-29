@@ -81,6 +81,10 @@ public class ObstacleSpriteManager
                         obstacles.add(tempObstacleSprite);
                         //Log.d(LOG_TAG, "New Obstacle Added");
                     }
+                    else
+                    {
+                        tempObstacleSprite.destroy();
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package independent_study.fields.sprites;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.game.Configuration;
@@ -57,13 +58,17 @@ public class WallSprite extends Sprite
     @Override
     public boolean isTouching(Sprite other)
     {
-        return false;
+        return Rect.intersects(spriteBounds, other.spriteBounds) || spriteBounds.contains(other.spriteBounds);
     }
 
     @Override
     public void touched(Sprite other)
     {
         //Other Sprites Run the Check Operations When They Touch This
+        //if(other instanceof PlayerSprite)
+        //{
+            //other.touched(this);
+        //}
     }
 
     @Override
