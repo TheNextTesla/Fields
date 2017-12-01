@@ -1,7 +1,9 @@
 package independent_study.fields.game;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
@@ -13,8 +15,9 @@ import independent_study.fields.framework.Screen;
 
 public class GameOverScreen extends Screen
 {
-    Paint titlePaint;
-    Paint subTitlePaint;
+    private Paint titlePaint;
+    private Paint subTitlePaint;
+    private long playerScore;
 
     public GameOverScreen(AndroidGame game)
     {
@@ -31,6 +34,9 @@ public class GameOverScreen extends Screen
         subTitlePaint.setTextAlign(Paint.Align.CENTER);
         subTitlePaint.setAntiAlias(true);
         subTitlePaint.setColor(Color.WHITE);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
+        playerScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
     }
 
     public void update(float deltaTime)
@@ -52,9 +58,10 @@ public class GameOverScreen extends Screen
 
     public void paint(float deltaTime)
     {
-        game.getGraphics().drawRect(0, 0, 1281, 801, Color.BLACK);
-        game.getGraphics().drawString("GAME OVER.", 400, 240, titlePaint);
-        game.getGraphics().drawString("Tap to return.", 400, 290, subTitlePaint);
+        game.getGraphics().clearScreen(Color.BLACK);
+        game.getGraphics().drawString("GAME OVER.", Configuration.GAME_WIDTH / 2, 240, titlePaint);
+        game.getGraphics().drawString("Tap to return.", Configuration.GAME_WIDTH / 2, 290, subTitlePaint);
+        game.getGraphics().drawString("Score: " + playerScore, Configuration.GAME_WIDTH / 2, 340, subTitlePaint);
     }
 
     public void pause()
@@ -74,6 +81,6 @@ public class GameOverScreen extends Screen
 
     public void backButton()
     {
-
+        game.setScreen(new TitleScreen(game));
     }
 }

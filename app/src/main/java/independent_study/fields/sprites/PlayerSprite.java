@@ -1,7 +1,9 @@
 package independent_study.fields.sprites;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
@@ -25,33 +27,31 @@ public class PlayerSprite extends Sprite
     public static final double PLAYER_MASS = 0.8; //Old 7.8
     public static final double PLATE_CHARGE_DENSITY = 5.8e-8;
 
-    private int playerWidth;
-    private int playerHeight;
     private boolean wasTouched;
+    private boolean isPositiveLeft;
     private double playerVelocity;
     private long lastPlayerUpdateTime;
     private CHARGE_STATE chargeState;
     private AndroidGame androidGame;
 
-    public PlayerSprite(int left, int top, int right, int bottom, AndroidGame game)
+    public PlayerSprite(int left, int top, int right, int bottom, boolean direction, AndroidGame game)
     {
         super(left, top, right, bottom, game.getGraphics());
 
-        playerWidth = Math.abs(left - right);
-        playerHeight = Math.abs(top - bottom);
         wasTouched = false;
+        isPositiveLeft = direction;
         playerVelocity = 0;
         lastPlayerUpdateTime = System.nanoTime();
         chargeState = CHARGE_STATE.POSITIVE;
         androidGame = game;
     }
 
-    public PlayerSprite(AndroidGame game)
+    public PlayerSprite(AndroidGame game, boolean direction)
     {
         this((Configuration.GAME_WIDTH / 2) + DEFAULT_PLAYER_WIDTH / 2,
                 (Configuration.GAME_HEIGHT) - (2 * DEFAULT_PLAYER_HEIGHT),
                 (Configuration.GAME_WIDTH / 2) - DEFAULT_PLAYER_WIDTH / 2,
-                (Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT), game);
+                (Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT), direction, game);
     }
 
     public void setChargeState(CHARGE_STATE newChargeState)
@@ -72,14 +72,12 @@ public class PlayerSprite extends Sprite
             if (chargeState == CHARGE_STATE.POSITIVE)
             {
                 double acceleration = ((PLATE_CHARGE_DENSITY / EPSILON_0) * PLAYER_CHARGE) / PLAYER_MASS;
-                playerVelocity += acceleration * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0;
-                //Log.d(LOG_TAG, "Acceleration: " + Double.toString(acceleration));
+                playerVelocity += (isPositiveLeft ? 1 : -1) * acceleration * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0;
             }
             else if (chargeState == CHARGE_STATE.NEGATIVE)
             {
                 double acceleration = ((PLATE_CHARGE_DENSITY / EPSILON_0) * PLAYER_CHARGE) / PLAYER_MASS;
-                playerVelocity -= acceleration * ((System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0);
-                //Log.d(LOG_TAG, "Acceleration: " + Double.toString(acceleration));
+                playerVelocity -= (isPositiveLeft ? 1 : -1) * acceleration * ((System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0);
             }
             else
             {
@@ -122,13 +120,8 @@ public class PlayerSprite extends Sprite
     @Override
     public void touched(Sprite other)
     {
-        //Log.d(LOG_TAG, "Player Touched");
         if(other instanceof WallSprite)
         {
-            //TODO: Revise Bounce Algorithm
-            //spriteBounds.offset((int) -Math.ceil(Math.signum(playerVelocity) * 5), 0);
-            //spriteBounds.offset((int) -Math.ceil(playerVelocity / 20), 0);
-            //playerVelocity = -(playerVelocity / 5);
             if(Math.abs(playerVelocity) < 100)
             {
                 if (spriteBounds.centerX() > Configuration.GAME_WIDTH / 2)

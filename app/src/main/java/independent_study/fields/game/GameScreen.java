@@ -28,7 +28,6 @@ import independent_study.fields.sprites.WallSprite;
 public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
-    private static final String HIGH_SCORE_TAG = "HighScore";
 
     private AndroidGraphics graphics;
     private AndroidInput input;
@@ -47,23 +46,25 @@ public class GameScreen extends Screen
     public GameScreen(AndroidGame game)
     {
         super(game);
+
+        //https://stackoverflow.com/questions/5051739/android-setting-preferences-programmatically
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
+        settingsEditor = sharedPreferences.edit();
+
         input = game.getInput();
         graphics = game.getGraphics();
-        wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, graphics);
-        wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, graphics);
-        playerSprite = new PlayerSprite(game);
+        wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), graphics);
+        wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, !sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), graphics);
+        playerSprite = new PlayerSprite(game, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true));
         obstacleSpriteManager = new ObstacleSpriteManager(game);
 
         gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
                 (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2),
                 Configuration.GAME_HEIGHT);
 
-        //https://stackoverflow.com/questions/5051739/android-setting-preferences-programmatically
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
-        settingsEditor = sharedPreferences.edit();
-        if(sharedPreferences.getLong(HIGH_SCORE_TAG, -1) == -1L)
+        if(sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1) == -1L)
         {
-            settingsEditor.putLong(HIGH_SCORE_TAG, 0L);
+            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, 0L);
             settingsEditor.apply();
         }
 
@@ -123,8 +124,6 @@ public class GameScreen extends Screen
 
         graphics.clearScreen(Color.GRAY);
 
-        //Log.d(LOG_TAG, "WallSprite Touching Player: " + playerSprite.isTouching(wallSpriteR));
-
         playerSprite.update();
         wallSpriteR.update();
         wallSpriteL.update();
@@ -145,13 +144,13 @@ public class GameScreen extends Screen
         score = (long) Math.floor((System.currentTimeMillis() - startTime) / (1000.0));
         graphics.drawString(String.format(Locale.US, "C-Score: %d", score), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
 
-        if(score > sharedPreferences.getLong(HIGH_SCORE_TAG, 0L))
+        if(score > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
         {
-            settingsEditor.putLong(HIGH_SCORE_TAG, score);
+            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, score);
             settingsEditor.apply();
         }
 
-        graphics.drawString(String.format(Locale.US, "H-Score: %d", sharedPreferences.getLong(HIGH_SCORE_TAG, 0L)), (Configuration.FIELD_WIDTH  - 15), 65, scorePaint);
+        graphics.drawString(String.format(Locale.US, "H-Score: %d", sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L)), (Configuration.FIELD_WIDTH  - 15), 65, scorePaint);
     }
 
     public void pause()

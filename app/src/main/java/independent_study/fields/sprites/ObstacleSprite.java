@@ -22,6 +22,17 @@ public class ObstacleSprite extends Sprite
     public static final Rect gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
         (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2), Configuration.GAME_HEIGHT);
 
+    public enum OBSTACLE_SPEED
+    {
+        SLOW(1), NORMAL(2), FAST(3);
+
+        int value;
+        OBSTACLE_SPEED(int speedConstant)
+        {
+            value = speedConstant;
+        }
+    }
+
     private int speed;
     private boolean wasTouched;
 

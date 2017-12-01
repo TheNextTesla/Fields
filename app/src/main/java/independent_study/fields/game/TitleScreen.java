@@ -1,5 +1,6 @@
 package independent_study.fields.game;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +13,7 @@ import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Screen;
+import independent_study.fields.settings.SettingsActivity;
 
 /**
  * Created by Blaine Huey on 11/6/2017.
@@ -41,17 +43,31 @@ public class TitleScreen extends Screen
     public void update(float deltaTime)
     {
         boolean touchTriggered = false;
+        boolean isSettingsSelection = false;
         for(AndroidInput.TouchEvent event : game.getInput().getTouchEvents())
         {
             if(event.type == AndroidInput.TouchEvent.TOUCH_DOWN)
             {
                 touchTriggered = true;
+
+                if(event.x > 700 && event.y < 200)
+                {
+                    isSettingsSelection = true;
+                }
             }
         }
 
         if(touchTriggered)
         {
-            game.setScreen(new GameScreen(game));
+            if(!isSettingsSelection)
+            {
+                game.setScreen(new GameScreen(game));
+            }
+            else
+            {
+                Intent intent = new Intent(game, SettingsActivity.class);
+                game.startActivity(intent);
+            }
         }
         //Log.d(LOG_TAG, "update");
     }
