@@ -36,18 +36,18 @@ public class ObstacleSprite extends Sprite
     private int speed;
     private boolean wasTouched;
 
-    public ObstacleSprite(int left, int top, int right, int bottom, AndroidGraphics graphics)
+    public ObstacleSprite(int left, int top, int right, int bottom, OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
     {
         super(left, top, right, bottom, graphics);
-        speed = DEFAULT_OBSTACLE_SPEED;
+        speed = (int) Math.round(DEFAULT_OBSTACLE_SPEED * (obstacleSpeed.value / 2.0));
         wasTouched = false;
     }
 
-    public ObstacleSprite(int topPixelStart, AndroidGraphics graphics)
+    public ObstacleSprite(int topPixelStart, OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
     {
         this(((topPixelStart + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) - DEFAULT_OBSTACLE_WIDTH / 2),
                 0, ((topPixelStart + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) + DEFAULT_OBSTACLE_WIDTH),
-                DEFAULT_OBSTACLE_HEIGHT, graphics);
+                DEFAULT_OBSTACLE_HEIGHT, obstacleSpeed, graphics);
     }
 
     @Override

@@ -56,7 +56,22 @@ public class GameScreen extends Screen
         wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), graphics);
         wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, !sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), graphics);
         playerSprite = new PlayerSprite(game, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true));
-        obstacleSpriteManager = new ObstacleSpriteManager(game);
+
+        int speedPreferenceMultiplier = Integer.valueOf(sharedPreferences.getString(Configuration.OBSTACLE_VELOCITY_TAG, "2"));
+        ObstacleSprite.OBSTACLE_SPEED speedMultiplier;
+        if(speedPreferenceMultiplier == 1)
+        {
+            speedMultiplier = ObstacleSprite.OBSTACLE_SPEED.SLOW;
+        }
+        else if(speedPreferenceMultiplier == 3)
+        {
+            speedMultiplier = ObstacleSprite.OBSTACLE_SPEED.FAST;
+        }
+        else
+        {
+            speedMultiplier = ObstacleSprite.OBSTACLE_SPEED.NORMAL;
+        }
+        obstacleSpriteManager = new ObstacleSpriteManager(speedMultiplier, game);
 
         gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
                 (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2),
@@ -78,7 +93,6 @@ public class GameScreen extends Screen
 
         startTime = System.currentTimeMillis();
         score = 0;
-        Log.d(LOG_TAG, "Constructed");
     }
 
     public void update(float deltaTime)

@@ -20,23 +20,27 @@ public class ObstacleSpriteManager
     private static final double STATE_FREQUENCY_CUTOFF = 4;
     private static final double STATE_CLUSTERING_SPACING = 20;
 
+    private boolean firstRun;
     private double frequency;
     private double clustering;
+    private ObstacleSprite.OBSTACLE_SPEED obstacleSpeed;
     private ArrayList<ObstacleSprite> obstacles;
     private AndroidGame androidGame;
 
-    public ObstacleSpriteManager(double startingFrequency, double startingClustering, AndroidGame game)
+    public ObstacleSpriteManager(double startingFrequency, double startingClustering, ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
     {
+        firstRun = true;
         frequency = startingFrequency;
         clustering = startingClustering;
         obstacles = updateObstacleList();
+        obstacleSpeed = speedMultiplier;
 
         androidGame = game;
     }
 
-    public ObstacleSpriteManager(AndroidGame game)
+    public ObstacleSpriteManager(ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
     {
-        this(0.31, 0.1, game);
+        this(0.31, 0.1, speedMultiplier, game);
     }
 
     public void updateGenerateObstacle()
@@ -45,6 +49,23 @@ public class ObstacleSpriteManager
 
         int randomStateClustering = (int) (Math.random() * clustering * 10);
         int randomStateFrequency = (int) (Math.random() * frequency * 10);
+
+        if(firstRun)
+        {
+            int randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+            ObstacleSprite tempObstacleSprite;
+            if(randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
+            {
+                tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            }
+            else
+            {
+                tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            }
+            obstacles.add(tempObstacleSprite);
+            firstRun = false;
+            return;
+        }
 
         //Log.d(LOG_TAG, "Frequency Double: " + Math.random() * frequency * 10);
         //Log.d(LOG_TAG, "Frequency: " + frequency);
@@ -58,33 +79,30 @@ public class ObstacleSpriteManager
                 ObstacleSprite tempObstacleSprite = null;
                 if(randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
                 {
-                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), androidGame.getGraphics());
+                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
                 }
                 else
                 {
-                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), androidGame.getGraphics());
+                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
                 }
 
-                if(tempObstacleSprite != null)
+                boolean wouldInterfere = false;
+                for(ObstacleSprite otherObstacleSprite : obstacles)
                 {
-                    boolean wouldInterfere = false;
-                    for(ObstacleSprite otherObstacleSprite : obstacles)
+                    if(otherObstacleSprite.isTouching(tempObstacleSprite) && otherObstacleSprite != tempObstacleSprite)
                     {
-                        if(otherObstacleSprite.isTouching(tempObstacleSprite) && otherObstacleSprite != tempObstacleSprite)
-                        {
-                            wouldInterfere = true;
-                        }
+                        wouldInterfere = true;
                     }
+                }
 
-                    if(!wouldInterfere)
-                    {
-                        obstacles.add(tempObstacleSprite);
-                        //Log.d(LOG_TAG, "New Obstacle Added");
-                    }
-                    else
-                    {
-                        tempObstacleSprite.destroy();
-                    }
+                if(!wouldInterfere)
+                {
+                    obstacles.add(tempObstacleSprite);
+                    //Log.d(LOG_TAG, "New Obstacle Added");
+                }
+                else
+                {
+                    tempObstacleSprite.destroy();
                 }
             }
         }
