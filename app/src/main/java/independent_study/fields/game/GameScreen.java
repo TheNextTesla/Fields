@@ -29,11 +29,12 @@ public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
 
+    private FieldGame fieldGame;
     private AndroidGraphics graphics;
     private AndroidInput input;
     private boolean wasPositiveLast;
+    private boolean hasBeenTouchedYet;
     private long startTime;
-    private long score;
     private WallSprite wallSpriteL;
     private WallSprite wallSpriteR;
     private PlayerSprite playerSprite;
@@ -46,6 +47,8 @@ public class GameScreen extends Screen
     public GameScreen(AndroidGame game)
     {
         super(game);
+
+        fieldGame = (FieldGame) game;
 
         //https://stackoverflow.com/questions/5051739/android-setting-preferences-programmatically
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
@@ -92,7 +95,6 @@ public class GameScreen extends Screen
         graphics.clearScreen(Color.GRAY);
 
         startTime = System.currentTimeMillis();
-        score = 0;
     }
 
     public void update(float deltaTime)
@@ -105,7 +107,23 @@ public class GameScreen extends Screen
             {
                 if(touchEvent.type == AndroidInput.TouchEvent.TOUCH_DOWN)
                 {
-                    isTouchedDown = true;
+                    if(!hasBeenTouchedYet)
+                    {
+                        hasBeenTouchedYet = true;
+                        if(touchEvent.x > Configuration.GAME_WIDTH / 2)
+                        {
+                            playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.POSITIVE);
+                        }
+                        else
+                        {
+                            playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NEGATIVE);
+                            wasPositiveLast = true;
+                        }
+                    }
+                    else
+                    {
+                        isTouchedDown = true;
+                    }
                 }
                 else if(touchEvent.type == AndroidInput.TouchEvent.TOUCH_UP)
                 {
@@ -118,7 +136,7 @@ public class GameScreen extends Screen
             }
         }
 
-        if(isTouchedDown)
+        if(isTouchedDown || !hasBeenTouchedYet)
         {
             playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NUETRAL);
         }
@@ -141,7 +159,7 @@ public class GameScreen extends Screen
         playerSprite.update();
         wallSpriteR.update();
         wallSpriteL.update();
-        obstacleSpriteManager.updateGenerateObstacle();
+        obstacleSpriteManager.updateGenerateObstacleAndObjective();
         obstacleSpriteManager.updateAllObstacles();
         Sprite.touchCheckAll();
 
@@ -155,12 +173,12 @@ public class GameScreen extends Screen
         playerSprite.paint();
         obstacleSpriteManager.paintAllObstacles();
 
-        score = (long) Math.floor((System.currentTimeMillis() - startTime) / (1000.0));
-        graphics.drawString(String.format(Locale.US, "C-Score: %d", score), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
+        fieldGame.setTimeScore((int) Math.floor((System.currentTimeMillis() - startTime) / (1000.0)));
+        graphics.drawString(String.format(Locale.US, "C-Score: %d", fieldGame.getGameScore()), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
 
-        if(score > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
+        if(fieldGame.getGameScore() > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
         {
-            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, score);
+            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, fieldGame.getGameScore());
             settingsEditor.apply();
         }
 
@@ -183,6 +201,7 @@ public class GameScreen extends Screen
         wallSpriteR.destroy();
         wallSpriteL.destroy();
         obstacleSpriteManager.deleteAllObstacles();
+        //fieldGame.clearGameScore();
     }
 
     public void backButton()

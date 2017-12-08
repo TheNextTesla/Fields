@@ -1,13 +1,12 @@
 package independent_study.fields.sprites;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.game.Configuration;
+import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameOverScreen;
 
 /**
@@ -16,17 +15,21 @@ import independent_study.fields.game.GameOverScreen;
 
 public class PlayerSprite extends Sprite
 {
+    //Constants of The PlayerSprite Class Itself
     private static final String LOG_TAG = "PlayerSprite";
     public enum CHARGE_STATE {POSITIVE, NUETRAL, NEGATIVE}
 
+    //Constants of the PlayerSprite's Size
     public static final int DEFAULT_PLAYER_WIDTH = 30;
     public static final int DEFAULT_PLAYER_HEIGHT = 30;
 
+    //Constants of the PlayerSprite's Motion
     public static final double EPSILON_0 = 8.854187e-12;
     public static final double PLAYER_CHARGE = 1.1e-1;
-    public static final double PLAYER_MASS = 0.8; //Old 7.8
+    public static final double PLAYER_MASS = 1.0; //Old 7.8
     public static final double PLATE_CHARGE_DENSITY = 5.8e-8;
 
+    //Instance Variable of Motion and State
     private boolean wasTouched;
     private boolean isPositiveLeft;
     private double playerVelocity;
@@ -34,6 +37,15 @@ public class PlayerSprite extends Sprite
     private CHARGE_STATE chargeState;
     private AndroidGame androidGame;
 
+    /**
+     * Main Constructor for the PlayerSprite (Should Only Be Called Once Per Game)
+     * @param left - Left-most coordinate of a Player
+     * @param top - Top-most coordinate of a Player
+     * @param right - Right-most coordinate of a Player
+     * @param bottom - Bottom-most coordinate of a Player
+     * @param direction - Direction of the Electric Field (Matches Wall Charge Sign Changes)
+     * @param game - Android Game Object
+     */
     public PlayerSprite(int left, int top, int right, int bottom, boolean direction, AndroidGame game)
     {
         super(left, top, right, bottom, game.getGraphics());
@@ -46,6 +58,11 @@ public class PlayerSprite extends Sprite
         androidGame = game;
     }
 
+    /**
+     * Alternative Constructor Assuming Defaults from the Configuration Class
+     * @param game - Android Game Object
+     * @param direction - Direction of the Electric Field (Matches Wall Charge Sign Changes)
+     */
     public PlayerSprite(AndroidGame game, boolean direction)
     {
         this((Configuration.GAME_WIDTH / 2) + DEFAULT_PLAYER_WIDTH / 2,
@@ -54,11 +71,18 @@ public class PlayerSprite extends Sprite
                 (Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT), direction, game);
     }
 
+    /**
+     * Changes the Charge State to a New Charge State
+     * @param newChargeState - New Charge State Enum
+     */
     public void setChargeState(CHARGE_STATE newChargeState)
     {
         chargeState = newChargeState;
     }
 
+    /**
+     * Updates the Positioning of the Player
+     */
     @Override
     public void update()
     {
@@ -90,10 +114,14 @@ public class PlayerSprite extends Sprite
         }
         else
         {
+            //If the Object Was Previously Touched, Self-Destruct
             destroy();
         }
     }
 
+    /**
+     * Paints the Player Sprite at its new Color and Position
+     */
     @Override
     public void paint()
     {
@@ -111,17 +139,30 @@ public class PlayerSprite extends Sprite
         }
     }
 
+    /**
+     * Return Whether of Not an Unspecified Object is Currently Touching This
+     * @param other - Other Sprite in Contact
+     * @return Whether of Not an Unspecified Object is Currently Touching This
+     */
     @Override
     public boolean isTouching(Sprite other)
     {
         return Rect.intersects(other.spriteBounds, this.spriteBounds);
     }
 
+    /**
+     * How to React to Touch Operation
+     * @param other - Other Sprite in Contact
+     */
     @Override
     public void touched(Sprite other)
     {
+        //If it is a Wall, Don't Die
         if(other instanceof WallSprite)
         {
+            wasTouched = true;
+            /*
+            //If the Hit Was Slow, Don't Bounce
             if(Math.abs(playerVelocity) < 100)
             {
                 if (spriteBounds.centerX() > Configuration.GAME_WIDTH / 2)
@@ -136,16 +177,35 @@ public class PlayerSprite extends Sprite
             }
             else
             {
+                //If the Hit Was Fast, Do Bounce
                 spriteBounds.offset((int) -Math.ceil(playerVelocity / 20), 0);
                 playerVelocity = -(playerVelocity / 5);
             }
+            */
         }
         else if(other instanceof ObstacleSprite)
         {
-            wasTouched = true;
+            if(other instanceof ObjectiveSprite)
+            {
+                if(androidGame instanceof FieldGame)
+                {
+                    ((FieldGame) androidGame).incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
+                    other.touched(this);
+                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + ((FieldGame) androidGame).getGameScore());
+                }
+            }
+            else
+            {
+                wasTouched = true;
+            }
+            //If it is an Obstacle, Do Die
         }
     }
 
+    /**
+     * When the Player Dies, the Game Ends
+     * Takes from the Sprite Destroy Method
+     */
     @Override
     public void destroy()
     {

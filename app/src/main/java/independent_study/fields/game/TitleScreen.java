@@ -28,6 +28,8 @@ public class TitleScreen extends Screen
 
     private int gameWidth;
     private int gameHeight;
+    private Paint settingsPaint;
+    private Paint titlePaint;
 
     public TitleScreen(AndroidGame game)
     {
@@ -37,7 +39,18 @@ public class TitleScreen extends Screen
 
         gameWidth = androidGraphics.getWidth();
         gameHeight = androidGraphics.getHeight();
-        Log.d(LOG_TAG, "Constructed");
+
+        settingsPaint = new Paint();
+        settingsPaint.setTextSize(20);
+        settingsPaint.setTextAlign(Paint.Align.CENTER);
+        settingsPaint.setAntiAlias(true);
+        settingsPaint.setColor(Color.WHITE);
+
+        titlePaint = new Paint();
+        titlePaint.setTextSize(50);
+        titlePaint.setTextAlign(Paint.Align.CENTER);
+        titlePaint.setAntiAlias(true);
+        titlePaint.setColor(Color.WHITE);
     }
 
     public void update(float deltaTime)
@@ -50,7 +63,7 @@ public class TitleScreen extends Screen
             {
                 touchTriggered = true;
 
-                if(event.x > 700 && event.y < 200)
+                if(event.x > Configuration.GAME_WIDTH - 100 && event.y < Configuration.GAME_HEIGHT / 4)
                 {
                     isSettingsSelection = true;
                 }
@@ -75,6 +88,9 @@ public class TitleScreen extends Screen
     public void paint(float deltaTime)
     {
         androidGraphics.clearScreen(Color.BLUE);
+        androidGraphics.drawRect(Configuration.GAME_WIDTH - 100, Configuration.GAME_HEIGHT / 4, 100, 0, Color.LTGRAY);
+        androidGraphics.drawString("Settings",Configuration.GAME_WIDTH - 50, Configuration.GAME_HEIGHT / 8, settingsPaint);
+        androidGraphics.drawString("Fields", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 2, titlePaint);
         //Log.d(LOG_TAG, "paint");
     }
 

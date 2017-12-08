@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import independent_study.fields.framework.AndroidGame;
-import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -20,16 +19,21 @@ public class ObstacleSpriteManager
     private static final double STATE_FREQUENCY_CUTOFF = 4;
     private static final double STATE_CLUSTERING_SPACING = 20;
 
-    private boolean firstRun;
     private double frequency;
     private double clustering;
     private ObstacleSprite.OBSTACLE_SPEED obstacleSpeed;
     private ArrayList<ObstacleSprite> obstacles;
     private AndroidGame androidGame;
 
+    /**
+     * A Manager for All the Obstacles 
+     * @param startingFrequency - The Probability of an Obstacle Appearing
+     * @param startingClustering - The Probability Relationship to the Number of Obstacles that Appear
+     * @param speedMultiplier - A Setting Multiplier for Obstacle Speed
+     * @param game - Android Game
+     */
     public ObstacleSpriteManager(double startingFrequency, double startingClustering, ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
     {
-        firstRun = true;
         frequency = startingFrequency;
         clustering = startingClustering;
         obstacles = updateObstacleList();
@@ -38,11 +42,19 @@ public class ObstacleSpriteManager
         androidGame = game;
     }
 
+    /**
+     * Simplified Alternative Constructor With Default Parameters
+     * @param speedMultiplier - A Setting Multiplier for Obstacle Speed
+     * @param game -  Android Game
+     */
     public ObstacleSpriteManager(ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
     {
         this(0.31, 0.1, speedMultiplier, game);
     }
 
+    /**
+     * Probabilistically Generates the Obstacles In the Game
+     */
     public void updateGenerateObstacle()
     {
         obstacles = updateObstacleList();
@@ -50,25 +62,13 @@ public class ObstacleSpriteManager
         int randomStateClustering = (int) (Math.random() * clustering * 10);
         int randomStateFrequency = (int) (Math.random() * frequency * 10);
 
-        if(firstRun)
+        //Guarantees that their is Always At Least One Obstacle
+        if(obstacles.size() == 0)
         {
             int randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
-            ObstacleSprite tempObstacleSprite;
-            if(randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
-            {
-                tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
-            }
-            else
-            {
-                tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
-            }
-            obstacles.add(tempObstacleSprite);
-            firstRun = false;
+            while(createNewCheckedObstacleSprite(randomStartCoordinate));
             return;
         }
-
-        //Log.d(LOG_TAG, "Frequency Double: " + Math.random() * frequency * 10);
-        //Log.d(LOG_TAG, "Frequency: " + frequency);
 
         if(randomStateFrequency + 2 > STATE_FREQUENCY_CUTOFF)
         {
@@ -76,34 +76,7 @@ public class ObstacleSpriteManager
 
             for(int i = 0; i < randomStateClustering / 3; i++)
             {
-                ObstacleSprite tempObstacleSprite = null;
-                if(randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
-                {
-                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
-                }
-                else
-                {
-                    tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
-                }
-
-                boolean wouldInterfere = false;
-                for(ObstacleSprite otherObstacleSprite : obstacles)
-                {
-                    if(otherObstacleSprite.isTouching(tempObstacleSprite) && otherObstacleSprite != tempObstacleSprite)
-                    {
-                        wouldInterfere = true;
-                    }
-                }
-
-                if(!wouldInterfere)
-                {
-                    obstacles.add(tempObstacleSprite);
-                    //Log.d(LOG_TAG, "New Obstacle Added");
-                }
-                else
-                {
-                    tempObstacleSprite.destroy();
-                }
+                while(createNewCheckedObstacleSprite(randomStartCoordinate));
             }
         }
         else
@@ -112,11 +85,132 @@ public class ObstacleSpriteManager
         }
     }
 
+    /**
+     * Probabilistically Generates the Obstacles and Objectives in the Game
+     */
+    public void updateGenerateObstacleAndObjective()
+    {
+        obstacles = updateObstacleList();
+
+        int randomStateClustering = (int) (Math.random() * clustering * 10);
+        int randomStateFrequency = (int) (Math.random() * frequency * 10);
+
+        //Guarantees that their is Always At Least One Obstacle
+        if(obstacles.size() == 0)
+        {
+            int randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+            while(createNewCheckedObjectiveSprite(randomStartCoordinate));
+
+            randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+            while(createNewCheckedObstacleSprite(randomStartCoordinate));
+            return;
+        }
+
+        if(randomStateFrequency + 2 > STATE_FREQUENCY_CUTOFF)
+        {
+            int randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+
+            for(int i = 0; i < randomStateClustering / 3; i++)
+            {
+                while(createNewCheckedObjectiveSprite(randomStartCoordinate));
+                randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+                while(createNewCheckedObstacleSprite(randomStartCoordinate));
+            }
+        }
+        else
+        {
+            incrementDifficulty();
+        }
+    }
+
+    /**
+     * Conditionally Creates and Obstacle at a Location
+     * @param randomStartCoordinate - X Coordinate for the Center of the Obstacle
+     * @return If The Creation Was Successful Without Overlapping Another
+     */
+    private boolean createNewCheckedObstacleSprite(int randomStartCoordinate)
+    {
+        ObstacleSprite tempObstacleSprite;
+
+        if (randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
+        {
+            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+        }
+        else
+        {
+            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+        }
+
+        boolean wouldInterfere = false;
+        for (ObstacleSprite otherObstacleSprite : obstacles)
+        {
+            if (otherObstacleSprite.isTouching(tempObstacleSprite) && otherObstacleSprite != tempObstacleSprite)
+            {
+                wouldInterfere = true;
+            }
+        }
+
+        if (!wouldInterfere)
+        {
+            obstacles.add(tempObstacleSprite);
+        }
+        else
+        {
+            tempObstacleSprite.destroy();
+        }
+        return !wouldInterfere;
+    }
+
+    /**
+     * Conditionally Creates and Objective at a Location
+     * @param randomStartCoordinate - X Coordinate for the Center of the Objective
+     * @return If The Creation Was Successful Without Overlapping Another
+     */
+    private boolean createNewCheckedObjectiveSprite(int randomStartCoordinate)
+    {
+        ObjectiveSprite tempObstacleSprite;
+
+        if (randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
+        {
+            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+        }
+        else
+        {
+            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+        }
+
+        boolean wouldInterfere = false;
+        for (ObstacleSprite otherObstacleSprite : obstacles)
+        {
+            if (otherObstacleSprite.isTouching(tempObstacleSprite) && otherObstacleSprite != tempObstacleSprite)
+            {
+                wouldInterfere = true;
+            }
+        }
+
+        if (!wouldInterfere)
+        {
+            obstacles.add(tempObstacleSprite);
+        }
+        else
+        {
+            tempObstacleSprite.destroy();
+        }
+        return !wouldInterfere;
+    }
+
+    /**
+     * Returns the Current List of Obstacles
+     * @return the Current List of Obstacles
+     */
     public ArrayList<ObstacleSprite> getObstacles()
     {
         return obstacles;
     }
 
+    /**
+     * Runs the Update Method on All Known Obstacles
+     */
     public void updateAllObstacles()
     {
         for(ObstacleSprite obstacleSprite : getObstacles())
@@ -125,6 +219,9 @@ public class ObstacleSpriteManager
         }
     }
 
+    /**
+     * Runs the Paint Method on All Known Obstacles
+     */
     public void paintAllObstacles()
     {
         for(ObstacleSprite obstacleSprite : getObstacles())
@@ -133,6 +230,9 @@ public class ObstacleSpriteManager
         }
     }
 
+    /**
+     * Runs the Delete Method on All Known Obstacles
+     */
     public void deleteAllObstacles()
     {
         obstacles = updateObstacleList();
@@ -142,6 +242,9 @@ public class ObstacleSpriteManager
         }
     }
 
+    /**
+     * Conditionally Increases the Difficulty (Probability) of Obstacles
+     */
     private void incrementDifficulty()
     {
         int randomState = (int) (Math.random() * 50 - getDifficulty()); //Originally 3
@@ -172,6 +275,10 @@ public class ObstacleSpriteManager
         }
     }
 
+    /**
+     * Generates a New Obstacle List of All Identified Ones from Sprite.sprites
+     * @return a New Obstacle List of All Identified Ones from Sprite.sprites
+     */
     private ArrayList<ObstacleSprite> updateObstacleList()
     {
         ArrayList<ObstacleSprite> obstacleSprites = new ArrayList<>();
@@ -187,6 +294,10 @@ public class ObstacleSpriteManager
         return obstacleSprites;
     }
 
+    /**
+     * Returns the Current 'Difficulty' of the Manager
+     * @return the Current 'Difficulty' of the Manager
+     */
     public double getDifficulty()
     {
         return frequency * clustering;

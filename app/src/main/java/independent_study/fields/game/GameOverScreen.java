@@ -17,7 +17,25 @@ public class GameOverScreen extends Screen
 {
     private Paint titlePaint;
     private Paint subTitlePaint;
-    private long playerScore;
+    private Paint otherPaint;
+    private long playerHighScore;
+    private String response;
+
+    private static final String[] negativeSnarkyRemarks =
+            {
+                    "Better Luck Next Time",
+                    "WOW, that was bad.  Is this actually your high score?",
+                    "It's just physics. IT'S NOT THAT HARD...",
+                    "Did you fall asleep again?",
+                    "It's very depressing to watch you fail over and over again"
+            };
+    private static final String[] positiveSnarkyRemarks =
+            {
+                    "Remember, holding will keep your charge nuetral",
+                    "Your initial sign is determined based on what side of the middle you click",
+                    "Keep trying!",
+                    "Your charge accelerates you.  Be careful not too switch to late."
+            };
 
     public GameOverScreen(AndroidGame game)
     {
@@ -35,8 +53,16 @@ public class GameOverScreen extends Screen
         subTitlePaint.setAntiAlias(true);
         subTitlePaint.setColor(Color.WHITE);
 
+        otherPaint = new Paint();
+        otherPaint.setTextSize(20);
+        otherPaint.setTextAlign(Paint.Align.CENTER);
+        otherPaint.setAntiAlias(true);
+        otherPaint.setColor(Color.WHITE);
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
-        playerScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
+        playerHighScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
+
+        response = generateSnarkyRemark();
     }
 
     public void update(float deltaTime)
@@ -59,9 +85,11 @@ public class GameOverScreen extends Screen
     public void paint(float deltaTime)
     {
         game.getGraphics().clearScreen(Color.BLACK);
-        game.getGraphics().drawString("GAME OVER.", Configuration.GAME_WIDTH / 2, 240, titlePaint);
-        game.getGraphics().drawString("Tap to return.", Configuration.GAME_WIDTH / 2, 290, subTitlePaint);
-        game.getGraphics().drawString("Score: " + playerScore, Configuration.GAME_WIDTH / 2, 340, subTitlePaint);
+        game.getGraphics().drawString("GAME OVER.", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3, titlePaint);
+        game.getGraphics().drawString("High Score: " + playerHighScore, Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 50, subTitlePaint);
+        game.getGraphics().drawString("Score: " + ((FieldGame) game).getGameScore(), Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 100, subTitlePaint);
+        game.getGraphics().drawString("Tap to return", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 150, subTitlePaint);
+        game.getGraphics().drawString(response, Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 190, otherPaint);
     }
 
     public void pause()
@@ -76,11 +104,25 @@ public class GameOverScreen extends Screen
 
     public void dispose()
     {
-
+        ((FieldGame) game).clearGameScore();
     }
 
     public void backButton()
     {
         game.setScreen(new TitleScreen(game));
+    }
+
+    private String generateSnarkyRemark()
+    {
+        if(((FieldGame) game).getGameScore() < playerHighScore - 100)
+        {
+            int index = (int) (Math.random() * negativeSnarkyRemarks.length);
+            return negativeSnarkyRemarks[index];
+        }
+        else
+        {
+            int index = (int) (Math.random() * positiveSnarkyRemarks.length);
+            return positiveSnarkyRemarks[index];
+        }
     }
 }
