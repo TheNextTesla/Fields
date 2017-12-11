@@ -26,12 +26,12 @@ public class GameOverScreen extends Screen
                     "Better Luck Next Time",
                     "WOW, that was bad.  Is this actually your high score?",
                     "It's just physics. IT'S NOT THAT HARD...",
-                    "Did you fall asleep again?",
+                    "Did you fall asleep?",
                     "It's very depressing to watch you fail over and over again"
             };
     private static final String[] positiveSnarkyRemarks =
             {
-                    "Remember, holding will keep your charge nuetral",
+                    "Remember, holding will keep your charge neutral",
                     "Your initial sign is determined based on what side of the middle you click",
                     "Keep trying!",
                     "Your charge accelerates you.  Be careful not too switch to late."
@@ -114,7 +114,7 @@ public class GameOverScreen extends Screen
 
     private String generateSnarkyRemark()
     {
-        if(((FieldGame) game).getGameScore() < playerHighScore - 100)
+        if(((FieldGame) game).getGameScore() < playerHighScore - 100 && (Math.random() < 0.2))
         {
             int index = (int) (Math.random() * negativeSnarkyRemarks.length);
             return negativeSnarkyRemarks[index];

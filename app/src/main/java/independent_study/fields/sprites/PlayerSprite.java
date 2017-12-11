@@ -17,7 +17,7 @@ public class PlayerSprite extends Sprite
 {
     //Constants of The PlayerSprite Class Itself
     private static final String LOG_TAG = "PlayerSprite";
-    public enum CHARGE_STATE {POSITIVE, NUETRAL, NEGATIVE}
+    public enum CHARGE_STATE {POSITIVE, NEUTRAL, NEGATIVE}
 
     //Constants of the PlayerSprite's Size
     public static final int DEFAULT_PLAYER_WIDTH = 30;

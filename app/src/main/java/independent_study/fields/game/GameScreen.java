@@ -1,6 +1,5 @@
 package independent_study.fields.game;
 
-import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,7 +7,6 @@ import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 import independent_study.fields.framework.AndroidGame;
@@ -138,7 +136,7 @@ public class GameScreen extends Screen
 
         if(isTouchedDown || !hasBeenTouchedYet)
         {
-            playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NUETRAL);
+            playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NEUTRAL);
         }
         else if(isTouchedUp)
         {
