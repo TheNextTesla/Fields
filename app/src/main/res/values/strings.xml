@@ -2,9 +2,12 @@
     <string name="app_name">Fields</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
+    <string name="error_missing_permissions">Application Needs More Permissions!</string>
 
-    <!-- Example General settings -->
+    <string name="toast_connected">Connected!</string>
+    <string name="toast_disconnected">Disconnected!</string>
+
+    <!-- Strings related to Settings -->
 
     <string name="pref_title_positive_plate_left">Positive Plate Left?</string>
 

@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameOverScreen;
@@ -35,7 +36,7 @@ public class PlayerSprite extends Sprite
     private double playerVelocity;
     private long lastPlayerUpdateTime;
     private CHARGE_STATE chargeState;
-    private AndroidGame androidGame;
+    private Game androidGame;
 
     /**
      * Main Constructor for the PlayerSprite (Should Only Be Called Once Per Game)
@@ -46,7 +47,7 @@ public class PlayerSprite extends Sprite
      * @param direction - Direction of the Electric Field (Matches Wall Charge Sign Changes)
      * @param game - Android Game Object
      */
-    public PlayerSprite(int left, int top, int right, int bottom, boolean direction, AndroidGame game)
+    public PlayerSprite(int left, int top, int right, int bottom, boolean direction, Game game)
     {
         super(left, top, right, bottom, game.getGraphics());
 
@@ -63,7 +64,7 @@ public class PlayerSprite extends Sprite
      * @param game - Android Game Object
      * @param direction - Direction of the Electric Field (Matches Wall Charge Sign Changes)
      */
-    public PlayerSprite(AndroidGame game, boolean direction)
+    public PlayerSprite(Game game, boolean direction)
     {
         this((Configuration.GAME_WIDTH / 2) + DEFAULT_PLAYER_WIDTH / 2,
                 (Configuration.GAME_HEIGHT) - (2 * DEFAULT_PLAYER_HEIGHT),
@@ -187,12 +188,9 @@ public class PlayerSprite extends Sprite
         {
             if(other instanceof ObjectiveSprite)
             {
-                if(androidGame instanceof FieldGame)
-                {
-                    ((FieldGame) androidGame).incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
+                    androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
                     other.touched(this);
                     Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + ((FieldGame) androidGame).getGameScore());
-                }
             }
             else
             {

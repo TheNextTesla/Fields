@@ -12,6 +12,7 @@ import java.util.Locale;
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidInput;
+import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.ObstacleSpriteManager;
@@ -27,7 +28,6 @@ public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
 
-    private FieldGame fieldGame;
     private AndroidGraphics graphics;
     private AndroidInput input;
     private boolean wasPositiveLast;
@@ -42,14 +42,12 @@ public class GameScreen extends Screen
     private SharedPreferences.Editor settingsEditor;
     private Paint scorePaint;
 
-    public GameScreen(AndroidGame game)
+    public GameScreen(Game game)
     {
         super(game);
 
-        fieldGame = (FieldGame) game;
-
         //https://stackoverflow.com/questions/5051739/android-setting-preferences-programmatically
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getActivity().getApplicationContext());
         settingsEditor = sharedPreferences.edit();
 
         input = game.getInput();
@@ -171,12 +169,12 @@ public class GameScreen extends Screen
         playerSprite.paint();
         obstacleSpriteManager.paintAllObstacles();
 
-        fieldGame.setTimeScore((int) Math.floor((System.currentTimeMillis() - startTime) / (1000.0)));
-        graphics.drawString(String.format(Locale.US, "C-Score: %d", fieldGame.getGameScore()), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
+        game.setTimeScore((int) Math.floor((System.currentTimeMillis() - startTime) / (1000.0)));
+        graphics.drawString(String.format(Locale.US, "C-Score: %d", game.getGameScore()), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
 
-        if(fieldGame.getGameScore() > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
+        if(game.getGameScore() > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
         {
-            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, fieldGame.getGameScore());
+            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, game.getGameScore());
             settingsEditor.apply();
         }
 

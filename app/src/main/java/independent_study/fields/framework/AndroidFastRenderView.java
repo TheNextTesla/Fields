@@ -1,5 +1,6 @@
 package independent_study.fields.framework;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -8,13 +9,13 @@ import android.view.SurfaceView;
 
 public class AndroidFastRenderView extends SurfaceView implements Runnable
 {
-    AndroidGame game;
+    Activity game;
     Bitmap framebuffer;
     Thread renderThread = null;
     SurfaceHolder holder;
     volatile boolean running = false;
     
-    public AndroidFastRenderView(AndroidGame game, Bitmap framebuffer)
+    public AndroidFastRenderView(Activity game, Bitmap framebuffer)
     {
         super(game);
         this.game = game;
@@ -46,8 +47,11 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable
                 deltaTime = (float) 3.15;
             }
 
-            game.getCurrentScreen().update(deltaTime);
-            game.getCurrentScreen().paint(deltaTime);
+            if(game instanceof Game)
+            {
+                ((Game) game).getCurrentScreen().update(deltaTime);
+                ((Game) game).getCurrentScreen().paint(deltaTime);
+            }
             
             Canvas canvas = holder.lockCanvas();
             canvas.getClipBounds(dstRect);

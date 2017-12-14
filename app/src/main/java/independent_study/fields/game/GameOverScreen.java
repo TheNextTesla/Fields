@@ -1,5 +1,6 @@
 package independent_study.fields.game;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -7,6 +8,7 @@ import android.preference.PreferenceManager;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
+import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 
 /**
@@ -37,7 +39,7 @@ public class GameOverScreen extends Screen
                     "Your charge accelerates you.  Be careful not too switch to late."
             };
 
-    public GameOverScreen(AndroidGame game)
+    public GameOverScreen(Game game)
     {
         super(game);
 
@@ -59,8 +61,15 @@ public class GameOverScreen extends Screen
         otherPaint.setAntiAlias(true);
         otherPaint.setColor(Color.WHITE);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
-        playerHighScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
+        if(game instanceof Activity)
+        {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(((Activity) game).getApplicationContext());
+            playerHighScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
+        }
+        else
+        {
+            playerHighScore = -1;
+        }
 
         response = generateSnarkyRemark();
     }

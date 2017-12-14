@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -23,7 +24,7 @@ public class ObstacleSpriteManager
     private double clustering;
     private ObstacleSprite.OBSTACLE_SPEED obstacleSpeed;
     private ArrayList<ObstacleSprite> obstacles;
-    private AndroidGame androidGame;
+    private Game androidGame;
 
     /**
      * A Manager for All the Obstacles 
@@ -32,7 +33,7 @@ public class ObstacleSpriteManager
      * @param speedMultiplier - A Setting Multiplier for Obstacle Speed
      * @param game - Android Game
      */
-    public ObstacleSpriteManager(double startingFrequency, double startingClustering, ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
+    public ObstacleSpriteManager(double startingFrequency, double startingClustering, ObstacleSprite.OBSTACLE_SPEED speedMultiplier, Game game)
     {
         frequency = startingFrequency;
         clustering = startingClustering;
@@ -47,7 +48,7 @@ public class ObstacleSpriteManager
      * @param speedMultiplier - A Setting Multiplier for Obstacle Speed
      * @param game -  Android Game
      */
-    public ObstacleSpriteManager(ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
+    public ObstacleSpriteManager(ObstacleSprite.OBSTACLE_SPEED speedMultiplier, Game game)
     {
         this(0.31, 0.1, speedMultiplier, game);
     }

@@ -1,5 +1,6 @@
 package independent_study.fields.game;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.AndroidInput;
+import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.settings.SettingsActivity;
 
@@ -31,7 +33,7 @@ public class TitleScreen extends Screen
     private Paint settingsPaint;
     private Paint titlePaint;
 
-    public TitleScreen(AndroidGame game)
+    public TitleScreen(Game game)
     {
         super(game);
         //androidImage = new AndroidImage(createTitleBitmap(), AndroidGraphics.ImageFormat.RGB565);
@@ -78,8 +80,8 @@ public class TitleScreen extends Screen
             }
             else
             {
-                Intent intent = new Intent(game, SettingsActivity.class);
-                game.startActivity(intent);
+                Intent intent = new Intent(game.getActivity(), SettingsActivity.class);
+                game.getActivity().startActivity(intent);
             }
         }
         //Log.d(LOG_TAG, "update");

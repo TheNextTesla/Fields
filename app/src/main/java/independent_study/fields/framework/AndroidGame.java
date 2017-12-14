@@ -11,14 +11,14 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
-public abstract class AndroidGame extends Activity
+public abstract class AndroidGame extends Activity implements Game
 {
-    AndroidFastRenderView renderView;
-    AndroidGraphics graphics;
-    AndroidAudio audio;
-    AndroidInput input;
-    Screen screen;
-    WakeLock wakeLock;
+    protected AndroidFastRenderView renderView;
+    protected AndroidGraphics graphics;
+    protected AndroidAudio audio;
+    protected AndroidInput input;
+    protected Screen screen;
+    protected WakeLock wakeLock;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -113,4 +113,9 @@ public abstract class AndroidGame extends Activity
     }
 
     public abstract Screen getInitScreen();
+
+    public Activity getActivity()
+    {
+        return this;
+    }
 }
