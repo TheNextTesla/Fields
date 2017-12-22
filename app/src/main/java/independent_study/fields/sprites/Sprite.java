@@ -115,4 +115,14 @@ public abstract class Sprite
     {
         Log.d("Sprite", "remove? " + sprites.remove(this));
     }
+
+    public int getLocationX()
+    {
+        return spriteBounds.centerX();
+    }
+
+    public int getLocationY()
+    {
+        return spriteBounds.centerY();
+    }
 }

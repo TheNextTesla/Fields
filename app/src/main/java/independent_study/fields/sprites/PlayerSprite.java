@@ -72,6 +72,14 @@ public class PlayerSprite extends Sprite
                 (Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT), direction, game);
     }
 
+    public PlayerSprite(Game game, int x, boolean direction)
+    {
+        this(x - DEFAULT_PLAYER_WIDTH / 2,
+                (Configuration.GAME_HEIGHT) - (2 * DEFAULT_PLAYER_HEIGHT),
+                x + DEFAULT_PLAYER_WIDTH / 2,
+                Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT, direction, game);
+    }
+
     /**
      * Changes the Charge State to a New Charge State
      * @param newChargeState - New Charge State Enum
@@ -79,6 +87,25 @@ public class PlayerSprite extends Sprite
     public void setChargeState(CHARGE_STATE newChargeState)
     {
         chargeState = newChargeState;
+    }
+
+    /**
+     * Returns the Current Charge State
+     * @return chargeState
+     */
+    public CHARGE_STATE getChargeState()
+    {
+        return chargeState;
+    }
+
+    public void setSpeed(double newSpeed)
+    {
+        playerVelocity = newSpeed;
+    }
+
+    public double getSpeed()
+    {
+        return playerVelocity;
     }
 
     /**

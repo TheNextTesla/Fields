@@ -28,19 +28,19 @@ public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
 
-    private AndroidGraphics graphics;
-    private AndroidInput input;
-    private boolean wasPositiveLast;
-    private boolean hasBeenTouchedYet;
-    private long startTime;
-    private WallSprite wallSpriteL;
-    private WallSprite wallSpriteR;
-    private PlayerSprite playerSprite;
-    private ObstacleSpriteManager obstacleSpriteManager;
-    private Rect gameRegion;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor settingsEditor;
-    private Paint scorePaint;
+    protected AndroidGraphics graphics;
+    protected AndroidInput input;
+    protected boolean wasPositiveLast;
+    protected boolean hasBeenTouchedYet;
+    protected long startTime;
+    protected WallSprite wallSpriteL;
+    protected WallSprite wallSpriteR;
+    protected PlayerSprite playerSprite;
+    protected ObstacleSpriteManager obstacleSpriteManager;
+    protected Rect gameRegion;
+    protected SharedPreferences sharedPreferences;
+    protected SharedPreferences.Editor settingsEditor;
+    protected Paint scorePaint;
 
     public GameScreen(Game game)
     {

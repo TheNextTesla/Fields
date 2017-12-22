@@ -60,6 +60,12 @@ public class ObjectiveSprite extends ObstacleSprite
         this(topPixelStart, DEFAULT_POINTS, obstacleSpeed, graphics);
     }
 
+    public ObjectiveSprite(int centerX, int centerY, int obstacleSpeed, int points, AndroidGraphics graphics)
+    {
+        super(centerX, centerY, obstacleSpeed, graphics);
+        this.points = points;
+    }
+
     /**
      * Sprite Update Method
      * Updates Unless It Gave a Death Animate

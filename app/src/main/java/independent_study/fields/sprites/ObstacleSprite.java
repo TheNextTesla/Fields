@@ -54,6 +54,13 @@ public class ObstacleSprite extends Sprite
         wasTouched = false;
     }
 
+    public ObstacleSprite(int centerX, int centerY, int obstacleSpeed, AndroidGraphics graphics)
+    {
+        super(centerX - DEFAULT_OBSTACLE_WIDTH / 2, centerY + DEFAULT_OBSTACLE_HEIGHT / 2, centerX + DEFAULT_OBSTACLE_WIDTH / 2, centerY - DEFAULT_OBSTACLE_HEIGHT / 2, graphics);
+        speed = obstacleSpeed;
+        wasTouched = false;
+    }
+
     /**
      * Alternative Constructor for ObstacleSprite
      * @param topPixelStart - The Starting Pixel X At the Top of the Screen
@@ -128,5 +135,10 @@ public class ObstacleSprite extends Sprite
     public void setSpeed(int newSpeed)
     {
         speed = newSpeed;
+    }
+
+    public int getSpeed()
+    {
+        return speed;
     }
 }

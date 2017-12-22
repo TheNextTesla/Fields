@@ -120,6 +120,14 @@ public class FieldGameMultiplayer extends NetworkedAndroidGame
     protected void onConnectionFailed(Endpoint endpoint)
     {
         super.onConnectionFailed(endpoint);
+        if(screen instanceof NetworkSearchScreen)
+        {
+            ((NetworkSearchScreen) screen).disconnected();
+        }
+        else if(screen instanceof MultiGameScreen)
+        {
+            ((MultiGameScreen) screen).disconnected();
+        }
     }
 
     /** {@see ConnectionsActivity#onReceive(Endpoint, Payload)} */
