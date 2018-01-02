@@ -217,7 +217,7 @@ public class PlayerSprite extends Sprite
             {
                     androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
                     other.touched(this);
-                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + ((FieldGame) androidGame).getGameScore());
+                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
             }
             else
             {

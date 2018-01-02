@@ -49,6 +49,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     protected WakeLock wakeLock;
     private String networkName;
     private State networkState = State.UNKNOWN;
+    private boolean shouldBeHost;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -81,6 +82,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MyGame");
 
+        shouldBeHost = true;
         networkName = generateRandomName();
     }
 
@@ -247,7 +249,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
      *
      * @param state The new state.
      */
-    private void setState(State state)
+    public void setState(State state)
     {
         if (networkState == state)
         {
@@ -261,11 +263,16 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
         onStateChanged(oldState, state);
     }
 
+    public void setShouldBeHost(boolean host)
+    {
+        shouldBeHost = host;
+    }
+
     /**
      *
      * @return
      */
-    private State getState()
+    public State getState()
     {
         return networkState;
     }

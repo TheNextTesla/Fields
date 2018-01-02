@@ -11,6 +11,7 @@ import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
+import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameScreen;
 import independent_study.fields.game.TitleScreen;
 import independent_study.fields.settings.SettingsActivity;
@@ -60,7 +61,8 @@ public class MultiGameScreen extends GameScreen implements Networked
 
     public void backButton()
     {
-        game.setScreen(new TitleScreen(game));
+        Intent intent = new Intent(game.getActivity(), FieldGame.class);
+        game.getActivity().startActivity(intent);
     }
 
     public void connected()
@@ -69,7 +71,6 @@ public class MultiGameScreen extends GameScreen implements Networked
     }
 
     public void disconnected()
-
     {
         game.setScreen(new TitleScreen(game));
     }

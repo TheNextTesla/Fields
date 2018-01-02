@@ -5,11 +5,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import java.lang.reflect.Field;
+
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
+import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameScreen;
 import independent_study.fields.game.TitleScreen;
 import independent_study.fields.settings.SettingsActivity;
@@ -78,9 +81,25 @@ public class NetworkSearchScreen extends Screen implements Networked
             {
                 isSearchingHost = true;
             }
+
+            game.getGraphics().clearScreen(Color.BLACK);
+        }
+
+        if(isSearching && isSearchingHost)
+        {
+            ((FieldGameMultiplayer) game).setShouldBeHost(true);
+            ((FieldGameMultiplayer) game).setState(NetworkedAndroidGame.State.ADVERTISING);
+        }
+        else if(isSearching)
+        {
+            ((FieldGameMultiplayer) game).setShouldBeHost(false);
+            ((FieldGameMultiplayer) game).setState(NetworkedAndroidGame.State.DISCOVERING);
+        }
+        else if(((FieldGameMultiplayer) game).getState() != NetworkedAndroidGame.State.UNKNOWN)
+        {
+            ((FieldGameMultiplayer) game).setState(NetworkedAndroidGame.State.UNKNOWN);
         }
     }
-
 
     public void paint(float deltaTime)
     {
@@ -119,10 +138,12 @@ public class NetworkSearchScreen extends Screen implements Networked
         {
             isSearching = false;
             isSearchingHost = false;
+            game.getGraphics().clearScreen(Color.BLACK);
         }
         else
         {
-            game.setScreen(new TitleScreen(game));
+            Intent intent = new Intent(game.getActivity(), FieldGame.class);
+            game.getActivity().startActivity(intent);
         }
     }
 
