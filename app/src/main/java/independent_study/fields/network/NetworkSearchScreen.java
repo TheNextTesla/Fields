@@ -100,6 +100,7 @@ public class NetworkSearchScreen extends Screen implements Networked
             Log.d(LOG_TAG, "Still Connected.");
             if(gameMultiplayer.getInputStream() != null && gameMultiplayer.getOutputStream() != null)
             {
+                Toast.makeText(game.getActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
                 game.setScreen(new MultiGameScreen(game, gameMultiplayer.getInputStream(), gameMultiplayer.getOutputStream(), gameMultiplayer.getHostStatus()));
             }
         }
@@ -129,13 +130,7 @@ public class NetworkSearchScreen extends Screen implements Networked
         }
         else if(isSearching)
         {
-            if(gameMultiplayer.getState() == NetworkedAndroidGame.State.CONNECTED)
-            {
-                //TODO: Stream Setup
-                Toast.makeText(game.getActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-                //game.setScreen(new MultiGameScreen(game, , , isSearchingHost));
-            }
-            else
+            if(gameMultiplayer.getState() != NetworkedAndroidGame.State.CONNECTED)
             {
                 graphics.drawString("SEARCHING", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 2, textPaint);
             }

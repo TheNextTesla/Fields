@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.Game;
 import independent_study.fields.sprites.ObjectiveSprite;
 import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.PlayerSprite;
@@ -178,7 +179,7 @@ public class GameUpdate
         }
     }
 
-    public ArrayList<Sprite> enact(AndroidGame game)
+    public ArrayList<Sprite> enact(Game game)
     {
         ArrayList<Sprite> newSprites = new ArrayList<>();
         //TODO: Direction Swapping?
