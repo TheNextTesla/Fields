@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
+import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
 import independent_study.fields.game.FieldGame;
@@ -26,7 +27,7 @@ public class MultiGameScreen extends GameScreen implements Networked
     private OutputStream outputStream;
     private boolean isHost;
 
-    public MultiGameScreen(AndroidGame game, InputStream input, OutputStream output, boolean host)
+    public MultiGameScreen(Game game, InputStream input, OutputStream output, boolean host)
     {
         super(game);
         inputStream = input;
@@ -72,7 +73,8 @@ public class MultiGameScreen extends GameScreen implements Networked
 
     public void disconnected()
     {
-        game.setScreen(new TitleScreen(game));
+        //game.setScreen(new TitleScreen(game));
+        backButton();
     }
 
     public void updateNetworkInformation()

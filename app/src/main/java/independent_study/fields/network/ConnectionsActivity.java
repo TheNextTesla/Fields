@@ -1,12 +1,15 @@
 package independent_study.fields.network;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -184,10 +187,36 @@ public abstract class ConnectionsActivity extends AppCompatActivity
   protected void onStart() {
     if (hasPermissions(this, getRequiredPermissions())) {
       createGoogleApiClient();
-    } else {
-      requestPermissions(getRequiredPermissions(), REQUEST_CODE_REQUIRED_PERMISSIONS);
+    }
+    else {
+      if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        requestNewPermissions(getRequiredPermissions());
+      }
+      else {
+        int requestCodeIncrement = 0;
+        for(String permission : getRequiredPermissions()) {
+          requestOldPermissions(permission, REQUEST_CODE_REQUIRED_PERMISSIONS + requestCodeIncrement);
+          requestCodeIncrement++;
+        }
+      }
     }
     super.onStart();
+  }
+
+  @TargetApi(23)
+  private void requestNewPermissions(String[] permissions) {
+    requestPermissions(permissions, REQUEST_CODE_REQUIRED_PERMISSIONS);
+  }
+
+  private void requestOldPermissions(String permission, int permissionCode) {
+    int permissionCheckRead = ContextCompat.checkSelfPermission(this, permission);
+    if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+        ActivityCompat.requestPermissions(this, new String[]{permission}, permissionCode);
+      } else {
+        ActivityCompat.requestPermissions(this, new String[]{permission}, permissionCode);
+      }
+    }
   }
 
   /** We've connected to Nearby Connections' GoogleApiClient. */
@@ -237,6 +266,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
    * we've found out if we successfully entered this mode.
    */
   protected void startAdvertising() {
+    createGoogleApiClient();
     mIsAdvertising = true;
     Nearby.Connections.startAdvertising(
             mGoogleApiClient,

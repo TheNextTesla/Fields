@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
@@ -23,6 +26,10 @@ import independent_study.fields.settings.SettingsActivity;
 
 public class NetworkSearchScreen extends Screen implements Networked
 {
+    private static final String LOG_TAG = "NetworkSearchScreen";
+
+    private FieldGameMultiplayer gameMultiplayer;
+    private AndroidGraphics graphics;
     private Rect hostButton;
     private Rect simpleButton;
     private Paint textPaint;
@@ -32,6 +39,9 @@ public class NetworkSearchScreen extends Screen implements Networked
     public NetworkSearchScreen(Game game)
     {
         super(game);
+
+        gameMultiplayer = (FieldGameMultiplayer) game;
+        graphics = game.getGraphics();
 
         hostButton = new Rect(Configuration.GAME_WIDTH / 3,
                 Configuration.GAME_HEIGHT / 5,
@@ -82,38 +92,61 @@ public class NetworkSearchScreen extends Screen implements Networked
                 isSearchingHost = true;
             }
 
-            game.getGraphics().clearScreen(Color.BLACK);
+            graphics.clearScreen(Color.BLACK);
         }
 
-        if(isSearching && isSearchingHost)
+        if(gameMultiplayer.getState() == NetworkedAndroidGame.State.CONNECTED)
         {
-            ((FieldGameMultiplayer) game).setShouldBeHost(true);
-            ((FieldGameMultiplayer) game).setState(NetworkedAndroidGame.State.ADVERTISING);
+            Log.d(LOG_TAG, "Still Connected.");
+            if(gameMultiplayer.getInputStream() != null && gameMultiplayer.getOutputStream() != null)
+            {
+                game.setScreen(new MultiGameScreen(game, gameMultiplayer.getInputStream(), gameMultiplayer.getOutputStream(), gameMultiplayer.getHostStatus()));
+            }
+        }
+        else if(isSearching && isSearchingHost)
+        {
+            gameMultiplayer.setHostStatus(true);
+            if(gameMultiplayer.getState() != NetworkedAndroidGame.State.ADVERTISING)
+                gameMultiplayer.setState(NetworkedAndroidGame.State.ADVERTISING);
         }
         else if(isSearching)
         {
-            ((FieldGameMultiplayer) game).setShouldBeHost(false);
-            ((FieldGameMultiplayer) game).setState(NetworkedAndroidGame.State.DISCOVERING);
+            gameMultiplayer.setHostStatus(false);
+            if(gameMultiplayer.getState() != NetworkedAndroidGame.State.DISCOVERING)
+                gameMultiplayer.setState(NetworkedAndroidGame.State.DISCOVERING);
         }
-        else if(((FieldGameMultiplayer) game).getState() != NetworkedAndroidGame.State.UNKNOWN)
+        else if(gameMultiplayer.getState() != NetworkedAndroidGame.State.UNKNOWN)
         {
-            ((FieldGameMultiplayer) game).setState(NetworkedAndroidGame.State.UNKNOWN);
+            gameMultiplayer.setState(NetworkedAndroidGame.State.UNKNOWN);
         }
     }
 
     public void paint(float deltaTime)
     {
-        if(isSearching)
+        if(isSearching && isSearchingHost)
         {
-            game.getGraphics().drawString("SEARCHING", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 2, textPaint);
+            graphics.drawString("BROADCASTING", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 2, textPaint);
+        }
+        else if(isSearching)
+        {
+            if(gameMultiplayer.getState() == NetworkedAndroidGame.State.CONNECTED)
+            {
+                //TODO: Stream Setup
+                Toast.makeText(game.getActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                //game.setScreen(new MultiGameScreen(game, , , isSearchingHost));
+            }
+            else
+            {
+                graphics.drawString("SEARCHING", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 2, textPaint);
+            }
         }
         else
         {
-            game.getGraphics().drawRectObject(hostButton, Color.GRAY);
-            game.getGraphics().drawRectObject(simpleButton, Color.GRAY);
-            game.getGraphics().drawString("Host", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10 * 3, textPaint);
-            game.getGraphics().drawString("Connect", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10 * 7, textPaint);
-            game.getGraphics().drawString("Select a Connection Option", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10, textPaint);
+            graphics.drawRectObject(hostButton, Color.GRAY);
+            graphics.drawRectObject(simpleButton, Color.GRAY);
+            graphics.drawString("Host", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10 * 3, textPaint);
+            graphics.drawString("Connect", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10 * 7, textPaint);
+            graphics.drawString("Select a Connection Option", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10, textPaint);
         }
     }
 
@@ -138,7 +171,7 @@ public class NetworkSearchScreen extends Screen implements Networked
         {
             isSearching = false;
             isSearchingHost = false;
-            game.getGraphics().clearScreen(Color.BLACK);
+            graphics.clearScreen(Color.BLACK);
         }
         else
         {
