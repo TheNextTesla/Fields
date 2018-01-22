@@ -20,4 +20,5 @@ public interface Game
     int getGameScore();
     void setTimeScore(int newScore);
     void incrementObjectiveScore(int increase);
+    void clearGameScore();
 }

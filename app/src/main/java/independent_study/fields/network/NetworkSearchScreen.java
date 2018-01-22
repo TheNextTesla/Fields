@@ -35,6 +35,7 @@ public class NetworkSearchScreen extends Screen implements Networked
     private Paint textPaint;
     private boolean isSearching;
     private boolean isSearchingHost;
+    private boolean didTryStart;
 
     public NetworkSearchScreen(Game game)
     {
@@ -60,6 +61,7 @@ public class NetworkSearchScreen extends Screen implements Networked
 
         isSearching = false;
         isSearchingHost = false;
+        didTryStart = false;
     }
 
     public void update(float deltaTime)
@@ -95,13 +97,23 @@ public class NetworkSearchScreen extends Screen implements Networked
             graphics.clearScreen(Color.BLACK);
         }
 
-        if(gameMultiplayer.getState() == NetworkedAndroidGame.State.CONNECTED)
+        if(gameMultiplayer.getState() == NetworkedAndroidGame.State.CONNECTED && isSearching)
         {
-            Log.d(LOG_TAG, "Still Connected.");
-            if(gameMultiplayer.getInputStream() != null && gameMultiplayer.getOutputStream() != null)
+            //Log.d(LOG_TAG, "Still Connected.");
+            if(gameMultiplayer.isConnectionConfirmed())
             {
-                Toast.makeText(game.getActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-                game.setScreen(new MultiGameScreen(game, gameMultiplayer.getInputStream(), gameMultiplayer.getOutputStream(), gameMultiplayer.getHostStatus()));
+                //Toast.makeText(game.getActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                game.setScreen(new MultiGameScreen(game, gameMultiplayer.getHostStatus()));
+            }
+            else if(!didTryStart && isSearchingHost)
+            {
+                didTryStart = true;
+                gameMultiplayer.startGameHosting();
+                Log.d(LOG_TAG, "Host trying to start");
+            }
+            else
+            {
+                graphics.drawString("" + System.currentTimeMillis(), 200, 100, textPaint);
             }
         }
         else if(isSearching && isSearchingHost)
@@ -116,10 +128,15 @@ public class NetworkSearchScreen extends Screen implements Networked
             if(gameMultiplayer.getState() != NetworkedAndroidGame.State.DISCOVERING)
                 gameMultiplayer.setState(NetworkedAndroidGame.State.DISCOVERING);
         }
+        else if(didTryStart)
+        {
+            didTryStart = false;
+        }
         else if(gameMultiplayer.getState() != NetworkedAndroidGame.State.UNKNOWN)
         {
             gameMultiplayer.setState(NetworkedAndroidGame.State.UNKNOWN);
         }
+
     }
 
     public void paint(float deltaTime)

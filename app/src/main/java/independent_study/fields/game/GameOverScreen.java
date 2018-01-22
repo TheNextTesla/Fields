@@ -96,7 +96,7 @@ public class GameOverScreen extends Screen
         game.getGraphics().clearScreen(Color.BLACK);
         game.getGraphics().drawString("GAME OVER.", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3, titlePaint);
         game.getGraphics().drawString("High Score: " + playerHighScore, Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 50, subTitlePaint);
-        game.getGraphics().drawString("Score: " + ((FieldGame) game).getGameScore(), Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 100, subTitlePaint);
+        game.getGraphics().drawString("Score: " + (game).getGameScore(), Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 100, subTitlePaint);
         game.getGraphics().drawString("Tap to return", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 150, subTitlePaint);
         game.getGraphics().drawString(response, Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 3 + 190, otherPaint);
     }
@@ -113,7 +113,7 @@ public class GameOverScreen extends Screen
 
     public void dispose()
     {
-        ((FieldGame) game).clearGameScore();
+        game.clearGameScore();
     }
 
     public void backButton()
@@ -123,7 +123,7 @@ public class GameOverScreen extends Screen
 
     private String generateSnarkyRemark()
     {
-        if(((FieldGame) game).getGameScore() < playerHighScore - 100 && (Math.random() < 0.2))
+        if((game).getGameScore() < playerHighScore - 100 && (Math.random() < 0.2))
         {
             int index = (int) (Math.random() * negativeSnarkyRemarks.length);
             return negativeSnarkyRemarks[index];

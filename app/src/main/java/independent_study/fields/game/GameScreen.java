@@ -191,6 +191,11 @@ public class GameScreen extends Screen
 
     }
 
+    public void gameOver()
+    {
+
+    }
+
     public void dispose()
     {
         //playerSprite.destroy(); - Player Sprite Destruction Triggers This

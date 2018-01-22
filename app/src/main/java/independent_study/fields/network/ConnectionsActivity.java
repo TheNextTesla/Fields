@@ -86,7 +86,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
    * The devices we are currently connected to. For advertisers, this may be large. For discoverers,
    * there will only be one entry in this map.
    */
-  private final Map<String, Endpoint> mEstablishedConnections = new HashMap<>();
+  protected final Map<String, Endpoint> mEstablishedConnections = new HashMap<>();
 
   /**
    * True if we are asking a discovered device to connect to us. While we ask, we cannot ask another
@@ -266,7 +266,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
    * we've found out if we successfully entered this mode.
    */
   protected void startAdvertising() {
-    createGoogleApiClient();
+    //createGoogleApiClient();
     mIsAdvertising = true;
     Nearby.Connections.startAdvertising(
             mGoogleApiClient,
@@ -521,6 +521,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
             new ResultCallback<Status>() {
               @Override
               public void onResult(@NonNull Status status) {
+                logD("Send Complete!");
                 if (!status.isSuccess()) {
                   logW(
                       String.format(

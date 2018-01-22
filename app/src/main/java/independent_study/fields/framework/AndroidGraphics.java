@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 public class AndroidGraphics
 {
-    public static enum ImageFormat
+    public enum ImageFormat
     {
         ARGB8888, ARGB4444, RGB565
     }
@@ -63,6 +63,7 @@ public class AndroidGraphics
                 try {
                     in.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

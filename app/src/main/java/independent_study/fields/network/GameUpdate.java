@@ -136,6 +136,9 @@ public class GameUpdate
 
     public static GameUpdate regenerateGameUpdate(String json)
     {
+        if(json == null || json.equals(""))
+            return null;
+
         try
         {
             JSONObject jsonObject = new JSONObject(json);

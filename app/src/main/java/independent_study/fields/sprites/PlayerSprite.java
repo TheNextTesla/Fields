@@ -6,9 +6,11 @@ import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.Game;
+import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
 import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameOverScreen;
+import independent_study.fields.game.GameScreen;
 
 /**
  * Created by Blaine Huey on 11/2/2017.
@@ -188,28 +190,8 @@ public class PlayerSprite extends Sprite
         //If it is a Wall, Don't Die
         if(other instanceof WallSprite)
         {
+            Log.d(LOG_TAG, "Player Touched!");
             wasTouched = true;
-            /*
-            //If the Hit Was Slow, Don't Bounce
-            if(Math.abs(playerVelocity) < 100)
-            {
-                if (spriteBounds.centerX() > Configuration.GAME_WIDTH / 2)
-                {
-                    spriteBounds.offsetTo((Configuration.GAME_WIDTH - (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) - spriteBounds.width(), spriteBounds.top);
-                }
-                else
-                {
-                    spriteBounds.offsetTo((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, spriteBounds.top);
-                }
-                playerVelocity = 0;
-            }
-            else
-            {
-                //If the Hit Was Fast, Do Bounce
-                spriteBounds.offset((int) -Math.ceil(playerVelocity / 20), 0);
-                playerVelocity = -(playerVelocity / 5);
-            }
-            */
         }
         else if(other instanceof ObstacleSprite)
         {
@@ -235,6 +217,13 @@ public class PlayerSprite extends Sprite
     public void destroy()
     {
         super.destroy();
-        androidGame.setScreen(new GameOverScreen(androidGame));
+        if(wasTouched)
+        {
+            Screen screen = androidGame.getCurrentScreen();
+            if(screen instanceof GameScreen)
+                ((GameScreen) screen).gameOver();
+
+            androidGame.setScreen(new GameOverScreen(androidGame));
+        }
     }
 }

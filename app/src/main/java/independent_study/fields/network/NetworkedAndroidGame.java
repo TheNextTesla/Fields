@@ -1,6 +1,5 @@
 package independent_study.fields.network;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
-import com.google.android.gms.nearby.connection.Payload;
 
 import java.util.Collection;
 import java.util.Random;
@@ -48,7 +46,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     protected Screen screen;
     protected WakeLock wakeLock;
     private String networkName;
-    private State networkState = State.UNKNOWN;
+    private volatile State networkState = State.UNKNOWN;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -79,7 +77,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
         setContentView(renderView);
         
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MyGame");
+        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "FieldMultiplayer");
 
         networkName = generateRandomName();
     }
@@ -184,6 +182,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint)
     {
+        super.onEndpointDiscovered(endpoint);
         // We found an advertiser!
         connectToEndpoint(endpoint);
     }
@@ -196,6 +195,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     @Override
     protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo)
     {
+        super.onConnectionInitiated(endpoint, connectionInfo);
         // A connection to another device has been initiated! We'll accept the connection immediately.
         acceptConnection(endpoint);
     }
@@ -207,6 +207,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     @Override
     protected void onEndpointConnected(Endpoint endpoint)
     {
+        super.onEndpointConnected(endpoint);
         Toast.makeText(this, getString(R.string.toast_connected) + endpoint.getName(), Toast.LENGTH_SHORT).show();
         setState(State.CONNECTED);
     }
@@ -218,13 +219,15 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint)
     {
+        super.onEndpointDisconnected(endpoint);
         Toast.makeText(this, getString(R.string.toast_disconnected) + endpoint.getName(), Toast.LENGTH_SHORT).show();
 
         // If we lost all our endpoints, then we should reset the state of our app and go back
         // to our initial state (discovering).
         if (getConnectedEndpoints().isEmpty())
         {
-            setState(State.DISCOVERING);
+            setState(State.UNKNOWN);
+            //setState(State.DISCOVERING);
         }
     }
 
@@ -235,6 +238,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     @Override
     protected void onConnectionFailed(Endpoint endpoint)
     {
+        super.onConnectionFailed(endpoint);
         // Let's try someone else.
         if (getState() == State.DISCOVERING && !getDiscoveredEndpoints().isEmpty())
         {
@@ -278,6 +282,9 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
      */
     private void onStateChanged(State oldState, State newState)
     {
+        if(oldState == newState)
+            return;
+
         // Update Nearby Connections to the new state.
         switch (newState)
         {
@@ -304,59 +311,20 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
                 }
                 else if (isAdvertising())
                 {
-                    // Continue to advertise, so others can still connect,
-                    // but clear the discover runnable.
-                    //removeCallbacks(mDiscoverRunnable);
+                    stopAdvertising();
                 }
                 break;
-            default:
-                // no-op
-                break;
-        }
-
-        // Update the UI.
-        switch (oldState)
-        {
             case UNKNOWN:
-                // Unknown is our initial state. Whatever state we move to,
-                // we're transitioning forwards.
-                //transitionForward(oldState, newState);
-                break;
-            case DISCOVERING:
-                switch (newState)
+                //TODO: Is this case needed?  Added in Troubleshooting
+                if (isDiscovering())
                 {
-                    case UNKNOWN:
-                        //transitionBackward(oldState, newState);
-                        break;
-                    case ADVERTISING:
-                    case CONNECTED:
-                        //transitionForward(oldState, newState);
-                        break;
-                    default:
-                        // no-op
-                        break;
+                    stopDiscovering();
                 }
-                break;
-            case ADVERTISING:
-                switch (newState)
+                if (isAdvertising())
                 {
-                    case UNKNOWN:
-                    case DISCOVERING:
-                        //transitionBackward(oldState, newState);
-                        break;
-                    case CONNECTED:
-                        //transitionForward(oldState, newState);
-                        break;
-                    default:
-                        // no-op
-                        break;
+                    stopAdvertising();
                 }
-                break;
-            case CONNECTED:
-                // Connected is our final state. Whatever new state we move to,
-                // we're transitioning backwards.
-                //transitionBackward(oldState, newState);
-                break;
+                disconnectFromAllEndpoints();
             default:
                 // no-op
                 break;
@@ -365,13 +333,13 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
 
     private static String generateRandomName()
     {
-        String name = "";
+        StringBuilder builder = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 5; i++)
         {
-            name += random.nextInt(10);
+            builder.append(random.nextInt(10));
         }
-        return name;
+        return builder.toString();
     }
 
     @SuppressWarnings("unchecked")
