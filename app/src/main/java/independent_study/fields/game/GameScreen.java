@@ -201,7 +201,8 @@ public class GameScreen extends Screen
         //playerSprite.destroy(); - Player Sprite Destruction Triggers This
         wallSpriteR.destroy();
         wallSpriteL.destroy();
-        obstacleSpriteManager.deleteAllObstacles();
+        if(obstacleSpriteManager != null)
+            obstacleSpriteManager.deleteAllObstacles();
         //fieldGame.clearGameScore();
     }
 

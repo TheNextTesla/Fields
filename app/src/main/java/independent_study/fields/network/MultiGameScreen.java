@@ -216,6 +216,7 @@ public class MultiGameScreen extends GameScreen implements Networked
 
         if(isHost)
         {
+            Log.d(LOG_TAG, "Obstacle Length: " + obstacleSpriteManager.getObstacles().size());
             gameUpdate = GameUpdate.generateHostGameUpdate(playerSprite, obstacleSpriteManager.getObstacles());
         }
         else

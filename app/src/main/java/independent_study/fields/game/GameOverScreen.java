@@ -1,6 +1,7 @@
 package independent_study.fields.game;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,7 @@ import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
+import independent_study.fields.network.FieldGameMultiplayer;
 
 /**
  * Created by Blaine Huey on 11/14/2017.
@@ -118,7 +120,19 @@ public class GameOverScreen extends Screen
 
     public void backButton()
     {
-        game.setScreen(new TitleScreen(game));
+        if(game instanceof FieldGame)
+        {
+            game.setScreen(new TitleScreen(game));
+        }
+        else if(game instanceof FieldGameMultiplayer)
+        {
+            Intent intent = new Intent(game.getActivity(), FieldGame.class);
+            game.getActivity().startActivity(intent);
+        }
+        else
+        {
+            game.setScreen(new TitleScreen(game));
+        }
     }
 
     private String generateSnarkyRemark()

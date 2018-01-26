@@ -1,6 +1,7 @@
 package independent_study.fields.network;
 
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,12 +97,14 @@ public class GameUpdate
         this.playerLocationY = playerSprite.getLocationY();
         this.timeStamp = System.currentTimeMillis();
 
-        if(obstacleSprites != null)
+        if(isHost && obstacleSprites != null)
         {
             obstaclesX = new int[obstacleSprites.size()];
             obstaclesY = new int[obstacleSprites.size()];
             obstaclesV = new int[obstacleSprites.size()];
             obstaclesP = new int[obstacleSprites.size()];
+
+            Log.d("GameUpdate", "obstacleSprites.size(): " + obstacleSprites.size());
 
             int index = 0;
             for(ObstacleSprite obstacle : obstacleSprites)
@@ -151,15 +154,17 @@ public class GameUpdate
 
             if(host)
             {
-                JSONArray jsonArrayX = jsonObject.getJSONArray(OBSTACLES_X);
-                JSONArray jsonArrayY = jsonObject.getJSONArray(OBSTACLES_Y);
-                JSONArray jsonArrayV = jsonObject.getJSONArray(OBSTACLES_V);
-                JSONArray jsonArrayP = jsonObject.getJSONArray(OBSTACLES_P);
+                JSONArray jsonArrayX = (JSONArray) jsonObject.get(OBSTACLES_X);
+                JSONArray jsonArrayY = (JSONArray) jsonObject.get(OBSTACLES_Y);
+                JSONArray jsonArrayV = (JSONArray) jsonObject.get(OBSTACLES_V);
+                JSONArray jsonArrayP = (JSONArray) jsonObject.get(OBSTACLES_P);
 
                 int[] obstaclesX = new int[jsonArrayX.length()];
                 int[] obstaclesY = new int[jsonArrayY.length()];
                 int[] obstaclesV = new int[jsonArrayP.length()];
                 int[] obstaclesP = new int[jsonArrayP.length()];
+
+                Log.d("GameUpdate", "ReceivedJSONArray: " + jsonArrayX.toString());
 
                 for(int i = 0; i < Math.min(jsonArrayX.length(), jsonArrayY.length()); i++)
                 {
@@ -202,7 +207,7 @@ public class GameUpdate
 
         newSprites.add(playerSprite);
 
-        if(isHost)
+        if(isHost && obstaclesX != null && obstaclesY != null)
         {
             for(int i = 0; i < Math.min(obstaclesX.length, obstaclesY.length); i++)
             {
@@ -237,7 +242,7 @@ public class GameUpdate
                 JSONArray jsonArrayV = new JSONArray();
                 JSONArray jsonArrayP = new JSONArray();
 
-                for(int i = 0; i < jsonArrayX.length(); i++)
+                for(int i = 0; i < obstaclesX.length; i++)
                 {
                     jsonArrayX.put(obstaclesX[i]);
                     jsonArrayY.put(obstaclesY[i]);
@@ -258,8 +263,8 @@ public class GameUpdate
             json.printStackTrace();
             jsonObject = null;
         }
+
+        Log.d("GameUpdate", jsonObject.toString());
         return jsonObject;
     }
-
-
 }

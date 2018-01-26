@@ -187,7 +187,7 @@ public class PlayerSprite extends Sprite
     @Override
     public void touched(Sprite other)
     {
-        //If it is a Wall, Don't Die
+        //If it is a Wall, Do Die
         if(other instanceof WallSprite)
         {
             Log.d(LOG_TAG, "Player Touched!");
