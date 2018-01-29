@@ -1,6 +1,5 @@
 package independent_study.fields.network;
 
-import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -9,7 +8,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.Game;
 import independent_study.fields.sprites.ObjectiveSprite;
 import independent_study.fields.sprites.ObstacleSprite;
@@ -264,7 +262,13 @@ public class GameUpdate
             jsonObject = null;
         }
 
-        Log.d("GameUpdate", jsonObject.toString());
+        Log.d("GameUpdate", jsonObject != null ? jsonObject.toString() : "null");
         return jsonObject;
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSON().toString();
     }
 }
