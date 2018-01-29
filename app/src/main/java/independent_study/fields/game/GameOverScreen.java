@@ -126,8 +126,7 @@ public class GameOverScreen extends Screen
         }
         else if(game instanceof FieldGameMultiplayer)
         {
-            Intent intent = new Intent(game.getActivity(), FieldGame.class);
-            game.getActivity().startActivity(intent);
+            game.getActivity().finish();
         }
         else
         {

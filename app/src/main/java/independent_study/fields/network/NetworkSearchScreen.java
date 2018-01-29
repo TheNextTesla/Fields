@@ -187,8 +187,7 @@ public class NetworkSearchScreen extends Screen implements Networked
         }
         else
         {
-            Intent intent = new Intent(game.getActivity(), FieldGame.class);
-            game.getActivity().startActivity(intent);
+            game.getActivity().finish();
         }
     }
 
