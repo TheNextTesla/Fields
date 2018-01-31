@@ -221,7 +221,10 @@ public class PlayerSprite extends Sprite
         {
             Screen screen = androidGame.getCurrentScreen();
             if(screen instanceof GameScreen)
+            {
+                Log.d(LOG_TAG, "Player Game Over");
                 ((GameScreen) screen).gameOver();
+            }
 
             androidGame.setScreen(new GameOverScreen(androidGame));
         }

@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
+import com.google.android.gms.nearby.connection.Payload;
 
 import java.util.Collection;
 import java.util.Random;
@@ -25,6 +26,11 @@ import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 
+/**
+ * @see "https://github.com/googlesamples/android-nearby"
+ * @see "https://developers.google.com/android/guides/api-client"
+ * @see "https://code.tutsplus.com/tutorials/google-play-services-using-the-nearby-connections-api--cms-24534"
+ */
 public abstract class NetworkedAndroidGame extends ConnectionsActivity implements Game
 {
     private static final long ADVERTISING_DURATION = 30000;
@@ -46,6 +52,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     protected Screen screen;
     protected WakeLock wakeLock;
     private String networkName;
+    private long lastMessageReceivedTime;
     private volatile State networkState = State.UNKNOWN;
 
     @Override
@@ -114,13 +121,6 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     {
         return input;
     }
-
-    /*
-    public FileIO getFileIO()
-    {
-        return fileIO;
-    }
-    */
 
     public AndroidGraphics getGraphics()
     {
@@ -209,6 +209,7 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
     {
         super.onEndpointConnected(endpoint);
         Toast.makeText(this, getString(R.string.toast_connected) + endpoint.getName(), Toast.LENGTH_SHORT).show();
+        lastMessageReceivedTime = 0;
         setState(State.CONNECTED);
     }
 
@@ -229,6 +230,13 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
             setState(State.UNKNOWN);
             //setState(State.DISCOVERING);
         }
+    }
+
+    @Override
+    protected void onReceive(Endpoint endpoint, Payload payload)
+    {
+        super.onReceive(endpoint, payload);
+        lastMessageReceivedTime = System.nanoTime();
     }
 
     /**
@@ -329,6 +337,11 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
                 // no-op
                 break;
         }
+    }
+
+    public long getLastMessageReceivedTime()
+    {
+        return lastMessageReceivedTime;
     }
 
     private static String generateRandomName()

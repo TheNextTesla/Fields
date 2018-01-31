@@ -3,17 +3,12 @@ package independent_study.fields.network;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
@@ -34,6 +29,7 @@ public class MultiGameScreen extends GameScreen implements Networked
 {
     private static final String GAME_OVER_STRING = "Game Over";
     private static final String LOG_TAG = "MultiGameScreen";
+    private static final double CONNECTION_TIMEOUT = 10 * Math.pow(10, 9);
 
     private FieldGameMultiplayer networkedAndroidGame;
     private String receivedString;
@@ -112,18 +108,11 @@ public class MultiGameScreen extends GameScreen implements Networked
 
         graphics.clearScreen(Color.GRAY);
 
-        playerSprite.update();
-        wallSpriteR.update();
-        wallSpriteL.update();
-
         if(isHost)
         {
             obstacleSpriteManager.updateGenerateObstacleAndObjective();
             obstacleSpriteManager.updateAllObstacles();
         }
-        Sprite.touchCheckAll();
-
-        System.gc();
 
         receivedString = retrieveNetworkInformation();
         GameUpdate gameUpdate = GameUpdate.regenerateGameUpdate(receivedString);
@@ -136,11 +125,29 @@ public class MultiGameScreen extends GameScreen implements Networked
                 tempSprite.paint();
             }
         }
+
+        playerSprite.update();
+        wallSpriteR.update();
+        wallSpriteL.update();
+
+        Sprite.touchCheckAll();
+
         updateNetworkInformation();
+
+        System.gc();
     }
 
     public void paint(float deltaTime)
     {
+        /*
+        if((networkedAndroidGame.getState() != NetworkedAndroidGame.State.CONNECTED && System.nanoTime() - (startTime * 1000000) > CONNECTION_TIMEOUT)
+                || (System.nanoTime() - networkedAndroidGame.getLastMessageReceivedTime() > CONNECTION_TIMEOUT && networkedAndroidGame.getLastMessageReceivedTime() != 0));
+        {
+            Log.d(LOG_TAG, "Connection Timeout!");
+            backButton();
+        }
+        */
+
         wallSpriteR.paint();
         wallSpriteL.paint();
         playerSprite.paint();
@@ -182,7 +189,6 @@ public class MultiGameScreen extends GameScreen implements Networked
     public void gameOver()
     {
         super.gameOver();
-
     }
 
     public void dispose()
@@ -195,8 +201,7 @@ public class MultiGameScreen extends GameScreen implements Networked
     public void backButton()
     {
         dispose();
-        Intent intent = new Intent(game.getActivity(), FieldGame.class);
-        game.getActivity().startActivity(intent);
+        game.getActivity().finish();
     }
 
     public void connected()

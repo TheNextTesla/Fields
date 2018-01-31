@@ -222,6 +222,11 @@ public class GameUpdate
         return newSprites;
     }
 
+    /**
+     * @see "https://developer.android.com/reference/org/json/JSONObject.html#put(java.lang.String,%20boolean)"
+     * @see "https://developer.android.com/reference/org/json/JSONArray.html"
+     * @return
+     */
     public JSONObject toJSON()
     {
         JSONObject jsonObject = new JSONObject();

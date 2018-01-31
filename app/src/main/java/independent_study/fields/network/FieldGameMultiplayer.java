@@ -14,6 +14,10 @@ import independent_study.fields.framework.Screen;
  * Created by Blaine Huey on 12/13/2017.
  */
 
+/**
+ * @see "https://developer.android.com/training/connect-devices-wirelessly/index.html"
+ * @see "https://developers.google.com/android/guides/setup"
+ */
 public class FieldGameMultiplayer extends NetworkedAndroidGame
 {
     private static final String LOG_TAG = "FieldGameMultiplayer";
@@ -157,6 +161,7 @@ public class FieldGameMultiplayer extends NetworkedAndroidGame
         Log.d(LOG_TAG, "onReceive");
         super.onReceive(endpoint, payload);
 
+        //https://developers.google.com/nearby/connections/android/exchange-data
         if(payload.getType() == Payload.Type.BYTES)
         {
             String receivedString = null;
@@ -214,6 +219,11 @@ public class FieldGameMultiplayer extends NetworkedAndroidGame
         return lastReceivedString;
     }
 
+    /**
+     *
+     * @see "https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload"
+     * @param string
+     */
     public void sendString(String string)
     {
         if(getState() == State.CONNECTED && mEstablishedConnections.size() != 0)

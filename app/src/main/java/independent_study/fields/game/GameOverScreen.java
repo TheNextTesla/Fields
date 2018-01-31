@@ -63,15 +63,8 @@ public class GameOverScreen extends Screen
         otherPaint.setAntiAlias(true);
         otherPaint.setColor(Color.WHITE);
 
-        if(game instanceof Activity)
-        {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(((Activity) game).getApplicationContext());
-            playerHighScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
-        }
-        else
-        {
-            playerHighScore = -1;
-        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getActivity().getApplicationContext());
+        playerHighScore = sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, -1);
 
         response = generateSnarkyRemark();
     }
@@ -89,7 +82,7 @@ public class GameOverScreen extends Screen
 
         if(touchTriggered)
         {
-            game.setScreen(new TitleScreen(game));
+            backButton();
         }
     }
 
