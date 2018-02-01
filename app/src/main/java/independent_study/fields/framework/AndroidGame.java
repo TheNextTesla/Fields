@@ -3,6 +3,7 @@ package independent_study.fields.framework;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Bundle;
@@ -11,14 +12,14 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
-public abstract class AndroidGame extends Activity
+public abstract class AndroidGame extends Activity implements Game
 {
-    AndroidFastRenderView renderView;
-    AndroidGraphics graphics;
-    AndroidAudio audio;
-    AndroidInput input;
-    Screen screen;
-    WakeLock wakeLock;
+    protected AndroidFastRenderView renderView;
+    protected AndroidGraphics graphics;
+    protected AndroidAudio audio;
+    protected AndroidInput input;
+    protected Screen screen;
+    protected WakeLock wakeLock;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -29,9 +30,6 @@ public abstract class AndroidGame extends Activity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        //int frameBufferWidth = isPortrait ? independent_study.fields.game.Configuration.GAME_HEIGHT : independent_study.fields.game.Configuration.GAME_WIDTH;
-        //int frameBufferHeight = isPortrait ? independent_study.fields.game.Configuration.GAME_WIDTH: independent_study.fields.game.Configuration.GAME_HEIGHT;
         Bitmap frameBuffer = Bitmap.createBitmap(independent_study.fields.game.Configuration.GAME_WIDTH,
                 independent_study.fields.game.Configuration.GAME_HEIGHT, Config.RGB_565);
         
@@ -42,7 +40,6 @@ public abstract class AndroidGame extends Activity
 
         renderView = new AndroidFastRenderView(this, frameBuffer);
         graphics = new AndroidGraphics(getAssets(), frameBuffer);
-        //fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
         screen = getInitScreen();
@@ -113,4 +110,9 @@ public abstract class AndroidGame extends Activity
     }
 
     public abstract Screen getInitScreen();
+
+    public Activity getActivity()
+    {
+        return this;
+    }
 }

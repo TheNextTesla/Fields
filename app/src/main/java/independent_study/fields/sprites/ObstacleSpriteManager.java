@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -23,7 +24,7 @@ public class ObstacleSpriteManager
     private double clustering;
     private ObstacleSprite.OBSTACLE_SPEED obstacleSpeed;
     private ArrayList<ObstacleSprite> obstacles;
-    private AndroidGame androidGame;
+    private Game androidGame;
 
     /**
      * A Manager for All the Obstacles 
@@ -32,7 +33,7 @@ public class ObstacleSpriteManager
      * @param speedMultiplier - A Setting Multiplier for Obstacle Speed
      * @param game - Android Game
      */
-    public ObstacleSpriteManager(double startingFrequency, double startingClustering, ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
+    public ObstacleSpriteManager(double startingFrequency, double startingClustering, ObstacleSprite.OBSTACLE_SPEED speedMultiplier, Game game)
     {
         frequency = startingFrequency;
         clustering = startingClustering;
@@ -47,7 +48,7 @@ public class ObstacleSpriteManager
      * @param speedMultiplier - A Setting Multiplier for Obstacle Speed
      * @param game -  Android Game
      */
-    public ObstacleSpriteManager(ObstacleSprite.OBSTACLE_SPEED speedMultiplier, AndroidGame game)
+    public ObstacleSpriteManager(ObstacleSprite.OBSTACLE_SPEED speedMultiplier, Game game)
     {
         this(0.31, 0.1, speedMultiplier, game);
     }
@@ -134,11 +135,11 @@ public class ObstacleSpriteManager
 
         if (randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
         {
-            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
         else
         {
-            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
 
         boolean wouldInterfere = false;
@@ -172,11 +173,11 @@ public class ObstacleSpriteManager
 
         if (randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
         {
-            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
         else
         {
-            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
 
         boolean wouldInterfere = false;

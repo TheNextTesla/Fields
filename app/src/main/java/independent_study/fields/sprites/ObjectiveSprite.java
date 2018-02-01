@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -26,11 +27,11 @@ public class ObjectiveSprite extends ObstacleSprite
      * @param bottom - Bottom-most coordinate of Sprite
      * @param pointValue - Value Given to the Player for Hitting It
      * @param obstacleSpeed - Speed Multiplier for the Obstacle
-     * @param graphics - Android Graphics to Draw Sprite On
+     * @param game - Android Graphics to Draw Sprite On
      */
-    public ObjectiveSprite(int left, int top, int right, int bottom, int pointValue, OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
+    public ObjectiveSprite(int left, int top, int right, int bottom, int pointValue, OBSTACLE_SPEED obstacleSpeed, Game game)
     {
-        super(left, top, right, bottom, obstacleSpeed, graphics);
+        super(left, top, right, bottom, obstacleSpeed, game);
         points = pointValue;
         wasPlayerTouched = false;
         didPlayerTouchedAnimation = false;
@@ -41,11 +42,11 @@ public class ObjectiveSprite extends ObstacleSprite
      * @param topPixelStart - The Starting Pixel X At the Top of the Screen
      * @param pointValue - Value Given to the Player for Hitting It
      * @param obstacleSpeed - Speed Multiplier for the Obstacle
-     * @param graphics - Android Graphics to Draw Sprite On
+     * @param game - Android Graphics to Draw Sprite On
      */
-    public ObjectiveSprite(int topPixelStart, int pointValue, ObstacleSprite.OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
+    public ObjectiveSprite(int topPixelStart, int pointValue, ObstacleSprite.OBSTACLE_SPEED obstacleSpeed, Game game)
     {
-        super(topPixelStart, obstacleSpeed, graphics);
+        super(topPixelStart, obstacleSpeed, game);
         points = pointValue;
     }
 
@@ -53,11 +54,17 @@ public class ObjectiveSprite extends ObstacleSprite
      * Alternative (2) Constructor For the ObjectiveSprite
      * @param topPixelStart - The Starting Pixel X At the Top of the Screen
      * @param obstacleSpeed - Speed Multiplier for the Obstacle
-     * @param graphics - Android Graphics to Draw Sprite On
+     * @param game - Android Graphics to Draw Sprite On
      */
-    public ObjectiveSprite(int topPixelStart, ObstacleSprite.OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
+    public ObjectiveSprite(int topPixelStart, ObstacleSprite.OBSTACLE_SPEED obstacleSpeed, Game game)
     {
-        this(topPixelStart, DEFAULT_POINTS, obstacleSpeed, graphics);
+        this(topPixelStart, DEFAULT_POINTS, obstacleSpeed, game);
+    }
+
+    public ObjectiveSprite(int centerX, int centerY, int obstacleSpeed, int points, Game game)
+    {
+        super(centerX, centerY, obstacleSpeed, game);
+        this.points = points;
     }
 
     /**

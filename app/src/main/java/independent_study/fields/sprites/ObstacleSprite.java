@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -45,12 +46,19 @@ public class ObstacleSprite extends Sprite
      * @param right - Right-most coordinate of Sprite
      * @param bottom - Bottom-most coordinate of Sprite
      * @param obstacleSpeed - Speed Multiplier for the Obstacle
-     * @param graphics - Android Graphics to Draw Sprite On
+     * @param game - Android Graphics to Draw Sprite On
      */
-    public ObstacleSprite(int left, int top, int right, int bottom, OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
+    public ObstacleSprite(int left, int top, int right, int bottom, OBSTACLE_SPEED obstacleSpeed, Game game)
     {
-        super(left, top, right, bottom, graphics);
+        super(left, top, right, bottom, game);
         speed = (int) Math.round(DEFAULT_OBSTACLE_SPEED * (obstacleSpeed.value / 2.0));
+        wasTouched = false;
+    }
+
+    public ObstacleSprite(int centerX, int centerY, int obstacleSpeed, Game game)
+    {
+        super(centerX - DEFAULT_OBSTACLE_WIDTH / 2, centerY + DEFAULT_OBSTACLE_HEIGHT / 2, centerX + DEFAULT_OBSTACLE_WIDTH / 2, centerY - DEFAULT_OBSTACLE_HEIGHT / 2, game);
+        speed = obstacleSpeed;
         wasTouched = false;
     }
 
@@ -58,13 +66,13 @@ public class ObstacleSprite extends Sprite
      * Alternative Constructor for ObstacleSprite
      * @param topPixelStart - The Starting Pixel X At the Top of the Screen
      * @param obstacleSpeed - Speed Multiplier for the Obstacle
-     * @param graphics - Android Graphics to Draw Sprite On
+     * @param game - Android Graphics to Draw Sprite On
      */
-    public ObstacleSprite(int topPixelStart, OBSTACLE_SPEED obstacleSpeed, AndroidGraphics graphics)
+    public ObstacleSprite(int topPixelStart, OBSTACLE_SPEED obstacleSpeed, Game game)
     {
         this(((topPixelStart + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) - DEFAULT_OBSTACLE_WIDTH / 2),
                 -DEFAULT_OBSTACLE_HEIGHT + 1, ((topPixelStart + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) + DEFAULT_OBSTACLE_WIDTH),
-                1, obstacleSpeed, graphics);
+                1, obstacleSpeed, game);
     }
 
     /**
@@ -128,5 +136,10 @@ public class ObstacleSprite extends Sprite
     public void setSpeed(int newSpeed)
     {
         speed = newSpeed;
+    }
+
+    public int getSpeed()
+    {
+        return speed;
     }
 }

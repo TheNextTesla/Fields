@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
 /**
@@ -27,12 +28,12 @@ public class WallSprite extends Sprite
      * @param right - Right-most coordinate of Wall
      * @param bottom - Bottom-most coordinate of Wall
      * @param isPositive - Charge of Sign of Wall (Determines Color)
-     * @param graphics - Android Graphics Object to Draw Upon
+     * @param game - Android Game Object to Draw Upon
      */
-    public WallSprite(int left, int top, int right, int bottom, boolean isPositive, AndroidGraphics graphics)
+    public WallSprite(int left, int top, int right, int bottom, boolean isPositive, Game game)
     {
         //Call to the Sprite Superclass, and sets the boolean isPositive
-        super(left, top, right, bottom, graphics);
+        super(left, top, right, bottom, game);
         positive = isPositive;
     }
 
@@ -40,14 +41,14 @@ public class WallSprite extends Sprite
      * WallSprite creating method for calling the constructor using default parameters (of Size and Location)
      * @param defaultWallType - Enum Representing the 'Type' of Wall, Currently Left and Right
      * @param positive - Charge of Sign of Wall
-     * @param graphics - Android Graphics to Draw Upon
+     * @param game - Android Graphics to Draw Upon
      * @return A New WallSprite in Default Location
      */
-    public static WallSprite generateDefault(DEFAULT_WALL_TYPE defaultWallType, boolean positive, AndroidGraphics graphics)
+    public static WallSprite generateDefault(DEFAULT_WALL_TYPE defaultWallType, boolean positive, Game game)
     {
         return defaultWallType == DEFAULT_WALL_TYPE.LEFT ?
-            new WallSprite(0, 0, DEFAULT_WALL_WIDTH, Configuration.GAME_HEIGHT, positive, graphics) :
-            new WallSprite(Configuration.GAME_WIDTH - DEFAULT_WALL_WIDTH, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, positive, graphics);
+            new WallSprite(0, 0, DEFAULT_WALL_WIDTH, Configuration.GAME_HEIGHT, positive, game) :
+            new WallSprite(Configuration.GAME_WIDTH - DEFAULT_WALL_WIDTH, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, positive, game);
     }
 
     /**

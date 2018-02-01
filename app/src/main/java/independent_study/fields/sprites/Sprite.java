@@ -1,11 +1,13 @@
 package independent_study.fields.sprites;
 
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.Log;
 
 import java.util.ArrayList;
 
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.Game;
 
 /**
  * Created by Blaine Huey on 11/1/2017.
@@ -84,6 +86,7 @@ public abstract class Sprite
     //Instance Variable Required By Sprite
     protected Rect spriteBounds;
     protected AndroidGraphics androidGraphics;
+    protected Resources resources;
 
     /**
      * Constructor for Every Sprite
@@ -91,14 +94,15 @@ public abstract class Sprite
      * @param top - Top-most coordinate of Sprite
      * @param right - Right-most coordinate of Sprite
      * @param bottom - Bottom-most coordinate of Sprite
-     * @param graphics - Android Graphics to Draw Sprite On
+     * @param game - Android Game to Draw Sprite On
      */
-    protected Sprite(int left, int top, int right, int bottom, AndroidGraphics graphics)
+    protected Sprite(int left, int top, int right, int bottom, Game game)
     {
         sprites.add(this);
         spriteBounds = new Rect(left, top, right, bottom);
         spriteBounds.sort();
-        androidGraphics = graphics;
+        androidGraphics = game.getGraphics();
+        resources = game.getResources();
     }
 
     //Abstract Required Methods For Implementation
@@ -114,5 +118,15 @@ public abstract class Sprite
     public void destroy()
     {
         Log.d("Sprite", "remove? " + sprites.remove(this));
+    }
+
+    public int getLocationX()
+    {
+        return spriteBounds.centerX();
+    }
+
+    public int getLocationY()
+    {
+        return spriteBounds.centerY();
     }
 }

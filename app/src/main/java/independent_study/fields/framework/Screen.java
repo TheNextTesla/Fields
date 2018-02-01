@@ -2,9 +2,9 @@ package independent_study.fields.framework;
 
 public abstract class Screen
 {
-    protected final AndroidGame game;
+    protected final Game game;
 
-    public Screen(AndroidGame game)
+    public Screen(Game game)
     {
         this.game = game;
     }

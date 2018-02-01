@@ -5,9 +5,12 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.framework.Game;
+import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
 import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameOverScreen;
+import independent_study.fields.game.GameScreen;
 
 /**
  * Created by Blaine Huey on 11/2/2017.
@@ -35,7 +38,7 @@ public class PlayerSprite extends Sprite
     private double playerVelocity;
     private long lastPlayerUpdateTime;
     private CHARGE_STATE chargeState;
-    private AndroidGame androidGame;
+    private Game androidGame;
 
     /**
      * Main Constructor for the PlayerSprite (Should Only Be Called Once Per Game)
@@ -46,9 +49,9 @@ public class PlayerSprite extends Sprite
      * @param direction - Direction of the Electric Field (Matches Wall Charge Sign Changes)
      * @param game - Android Game Object
      */
-    public PlayerSprite(int left, int top, int right, int bottom, boolean direction, AndroidGame game)
+    public PlayerSprite(int left, int top, int right, int bottom, boolean direction, Game game)
     {
-        super(left, top, right, bottom, game.getGraphics());
+        super(left, top, right, bottom, game);
 
         wasTouched = false;
         isPositiveLeft = direction;
@@ -63,12 +66,20 @@ public class PlayerSprite extends Sprite
      * @param game - Android Game Object
      * @param direction - Direction of the Electric Field (Matches Wall Charge Sign Changes)
      */
-    public PlayerSprite(AndroidGame game, boolean direction)
+    public PlayerSprite(Game game, boolean direction)
     {
         this((Configuration.GAME_WIDTH / 2) + DEFAULT_PLAYER_WIDTH / 2,
                 (Configuration.GAME_HEIGHT) - (2 * DEFAULT_PLAYER_HEIGHT),
                 (Configuration.GAME_WIDTH / 2) - DEFAULT_PLAYER_WIDTH / 2,
                 (Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT), direction, game);
+    }
+
+    public PlayerSprite(Game game, int x, boolean direction)
+    {
+        this(x - DEFAULT_PLAYER_WIDTH / 2,
+                (Configuration.GAME_HEIGHT) - (2 * DEFAULT_PLAYER_HEIGHT),
+                x + DEFAULT_PLAYER_WIDTH / 2,
+                Configuration.GAME_HEIGHT - DEFAULT_PLAYER_HEIGHT, direction, game);
     }
 
     /**
@@ -78,6 +89,25 @@ public class PlayerSprite extends Sprite
     public void setChargeState(CHARGE_STATE newChargeState)
     {
         chargeState = newChargeState;
+    }
+
+    /**
+     * Returns the Current Charge State
+     * @return chargeState
+     */
+    public CHARGE_STATE getChargeState()
+    {
+        return chargeState;
+    }
+
+    public void setSpeed(double newSpeed)
+    {
+        playerVelocity = newSpeed;
+    }
+
+    public double getSpeed()
+    {
+        return playerVelocity;
     }
 
     /**
@@ -157,42 +187,19 @@ public class PlayerSprite extends Sprite
     @Override
     public void touched(Sprite other)
     {
-        //If it is a Wall, Don't Die
+        //If it is a Wall, Do Die
         if(other instanceof WallSprite)
         {
+            Log.d(LOG_TAG, "Player Touched!");
             wasTouched = true;
-            /*
-            //If the Hit Was Slow, Don't Bounce
-            if(Math.abs(playerVelocity) < 100)
-            {
-                if (spriteBounds.centerX() > Configuration.GAME_WIDTH / 2)
-                {
-                    spriteBounds.offsetTo((Configuration.GAME_WIDTH - (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2) - spriteBounds.width(), spriteBounds.top);
-                }
-                else
-                {
-                    spriteBounds.offsetTo((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, spriteBounds.top);
-                }
-                playerVelocity = 0;
-            }
-            else
-            {
-                //If the Hit Was Fast, Do Bounce
-                spriteBounds.offset((int) -Math.ceil(playerVelocity / 20), 0);
-                playerVelocity = -(playerVelocity / 5);
-            }
-            */
         }
         else if(other instanceof ObstacleSprite)
         {
             if(other instanceof ObjectiveSprite)
             {
-                if(androidGame instanceof FieldGame)
-                {
-                    ((FieldGame) androidGame).incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
+                    androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
                     other.touched(this);
-                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + ((FieldGame) androidGame).getGameScore());
-                }
+                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
             }
             else
             {
@@ -210,6 +217,16 @@ public class PlayerSprite extends Sprite
     public void destroy()
     {
         super.destroy();
-        androidGame.setScreen(new GameOverScreen(androidGame));
+        if(wasTouched)
+        {
+            Screen screen = androidGame.getCurrentScreen();
+            if(screen instanceof GameScreen)
+            {
+                Log.d(LOG_TAG, "Player Game Over");
+                ((GameScreen) screen).gameOver();
+            }
+
+            androidGame.setScreen(new GameOverScreen(androidGame));
+        }
     }
 }

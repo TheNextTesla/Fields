@@ -12,6 +12,7 @@ import java.util.Locale;
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidInput;
+import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.ObstacleSpriteManager;
@@ -27,35 +28,32 @@ public class GameScreen extends Screen
 {
     private static final String LOG_TAG = "GameScreen";
 
-    private FieldGame fieldGame;
-    private AndroidGraphics graphics;
-    private AndroidInput input;
-    private boolean wasPositiveLast;
-    private boolean hasBeenTouchedYet;
-    private long startTime;
-    private WallSprite wallSpriteL;
-    private WallSprite wallSpriteR;
-    private PlayerSprite playerSprite;
-    private ObstacleSpriteManager obstacleSpriteManager;
-    private Rect gameRegion;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor settingsEditor;
-    private Paint scorePaint;
+    protected AndroidGraphics graphics;
+    protected AndroidInput input;
+    protected boolean wasPositiveLast;
+    protected boolean hasBeenTouchedYet;
+    protected long startTime;
+    protected WallSprite wallSpriteL;
+    protected WallSprite wallSpriteR;
+    protected PlayerSprite playerSprite;
+    protected ObstacleSpriteManager obstacleSpriteManager;
+    protected Rect gameRegion;
+    protected SharedPreferences sharedPreferences;
+    protected SharedPreferences.Editor settingsEditor;
+    protected Paint scorePaint;
 
-    public GameScreen(AndroidGame game)
+    public GameScreen(Game game)
     {
         super(game);
 
-        fieldGame = (FieldGame) game;
-
         //https://stackoverflow.com/questions/5051739/android-setting-preferences-programmatically
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getApplicationContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(game.getActivity().getApplicationContext());
         settingsEditor = sharedPreferences.edit();
 
         input = game.getInput();
         graphics = game.getGraphics();
-        wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), graphics);
-        wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, !sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), graphics);
+        wallSpriteL = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.LEFT, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), game);
+        wallSpriteR = WallSprite.generateDefault(WallSprite.DEFAULT_WALL_TYPE.RIGHT, !sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true), game);
         playerSprite = new PlayerSprite(game, sharedPreferences.getBoolean(Configuration.POSITIVE_PLATE_LEFT_TAG, true));
 
         int speedPreferenceMultiplier = Integer.valueOf(sharedPreferences.getString(Configuration.OBSTACLE_VELOCITY_TAG, "2"));
@@ -171,12 +169,12 @@ public class GameScreen extends Screen
         playerSprite.paint();
         obstacleSpriteManager.paintAllObstacles();
 
-        fieldGame.setTimeScore((int) Math.floor((System.currentTimeMillis() - startTime) / (1000.0)));
-        graphics.drawString(String.format(Locale.US, "C-Score: %d", fieldGame.getGameScore()), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
+        game.setTimeScore((int) Math.floor((System.currentTimeMillis() - startTime) / (1000.0)));
+        graphics.drawString(String.format(Locale.US, "C-Score: %d", game.getGameScore()), (Configuration.FIELD_WIDTH - 15), 40, scorePaint);
 
-        if(fieldGame.getGameScore() > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
+        if(game.getGameScore() > sharedPreferences.getLong(Configuration.HIGH_SCORE_TAG, 0L))
         {
-            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, fieldGame.getGameScore());
+            settingsEditor.putLong(Configuration.HIGH_SCORE_TAG, game.getGameScore());
             settingsEditor.apply();
         }
 
@@ -193,12 +191,18 @@ public class GameScreen extends Screen
 
     }
 
+    public void gameOver()
+    {
+
+    }
+
     public void dispose()
     {
         //playerSprite.destroy(); - Player Sprite Destruction Triggers This
         wallSpriteR.destroy();
         wallSpriteL.destroy();
-        obstacleSpriteManager.deleteAllObstacles();
+        if(obstacleSpriteManager != null)
+            obstacleSpriteManager.deleteAllObstacles();
         //fieldGame.clearGameScore();
     }
 
