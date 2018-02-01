@@ -1,6 +1,7 @@
 package independent_study.fields.framework;
 
 import android.app.Activity;
+import android.content.res.Resources;
 
 /**
  * Created by Blaine Huey on 12/12/2017.
@@ -12,6 +13,7 @@ public interface Game
     AndroidGraphics getGraphics();
     AndroidAudio getAudio();
     Activity getActivity();
+    Resources getResources();
 
     void setScreen(Screen screen);
     Screen getCurrentScreen();

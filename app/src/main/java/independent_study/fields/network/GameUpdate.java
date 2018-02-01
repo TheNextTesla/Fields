@@ -211,11 +211,11 @@ public class GameUpdate
             {
                 if(obstaclesP[i] == 0)
                 {
-                    newSprites.add(new ObstacleSprite(obstaclesX[i], obstaclesY[i], obstaclesV[i], game.getGraphics()));
+                    newSprites.add(new ObstacleSprite(obstaclesX[i], obstaclesY[i], obstaclesV[i], game));
                 }
                 else
                 {
-                    newSprites.add(new ObjectiveSprite(obstaclesX[i], obstaclesY[i], obstaclesV[i], obstaclesP[i], game.getGraphics()));
+                    newSprites.add(new ObjectiveSprite(obstaclesX[i], obstaclesY[i], obstaclesV[i], obstaclesP[i], game));
                 }
             }
         }

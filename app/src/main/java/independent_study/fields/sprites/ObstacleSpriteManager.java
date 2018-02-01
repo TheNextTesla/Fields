@@ -135,11 +135,11 @@ public class ObstacleSpriteManager
 
         if (randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
         {
-            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
         else
         {
-            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObstacleSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
 
         boolean wouldInterfere = false;
@@ -173,11 +173,11 @@ public class ObstacleSpriteManager
 
         if (randomStartCoordinate - (Configuration.FIELD_WIDTH / 2) >= 0)
         {
-            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate - STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
         else
         {
-            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame.getGraphics());
+            tempObstacleSprite = new ObjectiveSprite((int) Math.round(randomStartCoordinate + STATE_CLUSTERING_SPACING), obstacleSpeed, androidGame);
         }
 
         boolean wouldInterfere = false;

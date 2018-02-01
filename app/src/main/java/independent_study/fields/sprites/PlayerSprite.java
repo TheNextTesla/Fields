@@ -51,7 +51,7 @@ public class PlayerSprite extends Sprite
      */
     public PlayerSprite(int left, int top, int right, int bottom, boolean direction, Game game)
     {
-        super(left, top, right, bottom, game.getGraphics());
+        super(left, top, right, bottom, game);
 
         wasTouched = false;
         isPositiveLeft = direction;

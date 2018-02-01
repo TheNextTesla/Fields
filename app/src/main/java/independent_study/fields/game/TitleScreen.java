@@ -8,17 +8,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
-import java.util.List;
-
-import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.network.FieldGameMultiplayer;
-import independent_study.fields.network.NetworkSearchScreen;
-import independent_study.fields.network.NetworkedAndroidGame;
 import independent_study.fields.settings.SettingsActivity;
 
 /**

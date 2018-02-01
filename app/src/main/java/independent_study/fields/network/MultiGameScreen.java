@@ -1,13 +1,11 @@
 package independent_study.fields.network;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.stream.Stream;
 
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
@@ -139,14 +137,12 @@ public class MultiGameScreen extends GameScreen implements Networked
 
     public void paint(float deltaTime)
     {
-        /*
-        if((networkedAndroidGame.getState() != NetworkedAndroidGame.State.CONNECTED && System.nanoTime() - (startTime * 1000000) > CONNECTION_TIMEOUT)
-                || (System.nanoTime() - networkedAndroidGame.getLastMessageReceivedTime() > CONNECTION_TIMEOUT && networkedAndroidGame.getLastMessageReceivedTime() != 0));
+        if((networkedAndroidGame.getState() != NetworkedAndroidGame.State.CONNECTED && System.currentTimeMillis() - startTime > CONNECTION_TIMEOUT / 100000.0)
+                || (System.nanoTime() - networkedAndroidGame.getLastMessageReceivedTime() > CONNECTION_TIMEOUT && networkedAndroidGame.getLastMessageReceivedTime() != 0))
         {
             Log.d(LOG_TAG, "Connection Timeout!");
             backButton();
         }
-        */
 
         wallSpriteR.paint();
         wallSpriteL.paint();

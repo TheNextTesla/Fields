@@ -3,6 +3,7 @@ package independent_study.fields.framework;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Bundle;
@@ -29,9 +30,6 @@ public abstract class AndroidGame extends Activity implements Game
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        //int frameBufferWidth = isPortrait ? independent_study.fields.game.Configuration.GAME_HEIGHT : independent_study.fields.game.Configuration.GAME_WIDTH;
-        //int frameBufferHeight = isPortrait ? independent_study.fields.game.Configuration.GAME_WIDTH: independent_study.fields.game.Configuration.GAME_HEIGHT;
         Bitmap frameBuffer = Bitmap.createBitmap(independent_study.fields.game.Configuration.GAME_WIDTH,
                 independent_study.fields.game.Configuration.GAME_HEIGHT, Config.RGB_565);
         
@@ -42,7 +40,6 @@ public abstract class AndroidGame extends Activity implements Game
 
         renderView = new AndroidFastRenderView(this, frameBuffer);
         graphics = new AndroidGraphics(getAssets(), frameBuffer);
-        //fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
         screen = getInitScreen();

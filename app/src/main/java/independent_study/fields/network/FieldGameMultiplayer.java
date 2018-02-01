@@ -1,5 +1,6 @@
 package independent_study.fields.network;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -56,6 +57,12 @@ public class FieldGameMultiplayer extends NetworkedAndroidGame
     public int getGameScore()
     {
         return objectiveScore + timeScore;
+    }
+
+    @Override
+    public Resources getResources()
+    {
+        return super.getResources();
     }
 
     public void setTimeScore(int newScore)

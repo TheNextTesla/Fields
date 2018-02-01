@@ -2,9 +2,9 @@ package independent_study.fields.network;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -218,6 +218,12 @@ public abstract class ConnectionsActivity extends AppCompatActivity
         super.onStart();
     }
 
+    @Override
+    public Resources getResources()
+    {
+        return super.getResources();
+    }
+
     @TargetApi(23)
     private void requestNewPermissions(String[] permissions)
     {
@@ -395,53 +401,62 @@ public abstract class ConnectionsActivity extends AppCompatActivity
     */
     protected void startDiscovering()
     {
-        mIsDiscovering = true;
-        mDiscoveredEndpoints.clear();
-        Nearby.Connections.startDiscovery(
-                mGoogleApiClient,
-                getServiceId(),
-                new EndpointDiscoveryCallback()
-                {
-                    @Override
-                    public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info)
+        try
+        {
+            mIsDiscovering = true;
+            mDiscoveredEndpoints.clear();
+            Nearby.Connections.startDiscovery(
+                    mGoogleApiClient,
+                    getServiceId(),
+                    new EndpointDiscoveryCallback()
                     {
-                        logD(String.format("onEndpointFound(endpointId=%s, serviceId=%s, endpointName=%s)",
-                        endpointId, info.getServiceId(), info.getEndpointName()));
-
-                        if (getServiceId().equals(info.getServiceId()))
+                        @Override
+                        public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info)
                         {
-                            Endpoint endpoint = new Endpoint(endpointId, info.getEndpointName());
-                            mDiscoveredEndpoints.put(endpointId, endpoint);
-                            onEndpointDiscovered(endpoint);
-                        }
-                    }
+                            logD(String.format("onEndpointFound(endpointId=%s, serviceId=%s, endpointName=%s)",
+                                    endpointId, info.getServiceId(), info.getEndpointName()));
 
-                    @Override
-                    public void onEndpointLost(String endpointId)
-                    {
-                        logD(String.format("onEndpointLost(endpointId=%s)", endpointId));
-                    }
-                },
-                new DiscoveryOptions(STRATEGY)).setResultCallback(
-                        new ResultCallback<Status>()
-                        {
-                            @Override
-                            public void onResult(@NonNull Status status)
+                            if (getServiceId().equals(info.getServiceId()))
                             {
-                                if (status.isSuccess())
-                                {
-                                    onDiscoveryStarted();
-                                }
-                                else
-                                {
-                                    mIsDiscovering = false;
-                                    logW(String.format(
-                                            "Discovering failed. Received status %s.",
-                                            ConnectionsActivity.toString(status)));
-                                    onDiscoveryFailed();
-                                }
+                                Endpoint endpoint = new Endpoint(endpointId, info.getEndpointName());
+                                mDiscoveredEndpoints.put(endpointId, endpoint);
+                                onEndpointDiscovered(endpoint);
                             }
-                        });
+                        }
+
+                        @Override
+                        public void onEndpointLost(String endpointId)
+                        {
+                            logD(String.format("onEndpointLost(endpointId=%s)", endpointId));
+                        }
+                    },
+                    new DiscoveryOptions(STRATEGY)).setResultCallback(
+                    new ResultCallback<Status>()
+                    {
+                        @Override
+                        public void onResult(@NonNull Status status)
+                        {
+                            if (status.isSuccess())
+                            {
+                                onDiscoveryStarted();
+                            }
+                            else
+                            {
+                                mIsDiscovering = false;
+                                logW(String.format(
+                                        "Discovering failed. Received status %s.",
+                                        ConnectionsActivity.toString(status)));
+                                onDiscoveryFailed();
+                            }
+                        }
+                    });
+        }
+        catch (IllegalStateException ise)
+        {
+            ise.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Network Startup Failed!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     /** Stops discovery. */

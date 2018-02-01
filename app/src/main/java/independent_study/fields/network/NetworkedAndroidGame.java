@@ -2,6 +2,7 @@ package independent_study.fields.network;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Bundle;
@@ -115,6 +116,12 @@ public abstract class NetworkedAndroidGame extends ConnectionsActivity implement
 
         if (isFinishing())
             screen.dispose();
+    }
+
+    @Override
+    public Resources getResources()
+    {
+        return super.getResources();
     }
 
     public AndroidInput getInput()
