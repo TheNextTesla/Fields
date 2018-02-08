@@ -132,24 +132,28 @@ public class AndroidGraphics
         canvas.drawBitmap((Image).bitmap, x, y, null);
     }
     
-    public void drawScaledImage(AndroidImage Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight){
-    	
-    	
-   	 srcRect.left = srcX;
+    public void drawScaledImage(AndroidImage Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight) {
+
+   	    srcRect.left = srcX;
         srcRect.top = srcY;
         srcRect.right = srcX + srcWidth;
         srcRect.bottom = srcY + srcHeight;
-        
-        
+
         dstRect.left = x;
         dstRect.top = y;
         dstRect.right = x + width;
         dstRect.bottom = y + height;
-        
-   
-        
+
         canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, null);
-        
+    }
+
+    public void drawScaledImage(AndroidImage image, Rect destRect) {
+        srcRect.left = 0;
+        srcRect.top = 0;
+        srcRect.right = image.getWidth();
+        srcRect.bottom = image.getHeight();
+
+        canvas.drawBitmap(((AndroidImage) image).bitmap, srcRect, destRect, null);
     }
 
     public int getWidth() {
