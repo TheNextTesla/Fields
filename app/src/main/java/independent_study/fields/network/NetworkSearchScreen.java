@@ -4,21 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.lang.reflect.Field;
-
-import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
-import independent_study.fields.game.FieldGame;
-import independent_study.fields.game.GameScreen;
-import independent_study.fields.game.TitleScreen;
-import independent_study.fields.settings.SettingsActivity;
+import independent_study.fields.ui.TextBoxButton;
 
 /**
  * Created by Blaine Huey on 12/11/2017.
@@ -30,8 +22,10 @@ public class NetworkSearchScreen extends Screen implements Networked
 
     private FieldGameMultiplayer gameMultiplayer;
     private AndroidGraphics graphics;
-    private Rect hostButton;
-    private Rect simpleButton;
+    private Rect hostButtonRect;
+    private Rect simpleButtonRect;
+    private TextBoxButton hostButton;
+    private TextBoxButton simpleButton;
     private Paint textPaint;
     private boolean isSearching;
     private boolean isSearchingHost;
@@ -44,14 +38,17 @@ public class NetworkSearchScreen extends Screen implements Networked
         gameMultiplayer = (FieldGameMultiplayer) game;
         graphics = game.getGraphics();
 
-        hostButton = new Rect(Configuration.GAME_WIDTH / 3,
+        hostButtonRect = new Rect(Configuration.GAME_WIDTH / 3,
                 Configuration.GAME_HEIGHT / 5,
                 Configuration.GAME_WIDTH /3 * 2,
                 Configuration.GAME_HEIGHT / 5 * 2);
-        simpleButton = new Rect(Configuration.GAME_WIDTH / 3,
+        simpleButtonRect = new Rect(Configuration.GAME_WIDTH / 3,
                 Configuration.GAME_HEIGHT / 5 * 3,
                 Configuration.GAME_WIDTH / 3 * 2,
                 Configuration.GAME_HEIGHT / 5 * 4);
+
+        hostButton = new TextBoxButton(hostButtonRect, Color.GRAY, "Host", 30, Color.BLUE, game);
+        simpleButton = new TextBoxButton(simpleButtonRect, Color.GRAY, "Connect", 30, Color.BLUE, game);
 
         textPaint = new Paint();
         textPaint.setTextSize(30);
@@ -73,12 +70,12 @@ public class NetworkSearchScreen extends Screen implements Networked
             if(event.type == AndroidInput.TouchEvent.TOUCH_DOWN)
             {
                 Rect point = new Rect(event.x, event.y, event.x, event.y);
-                if(Rect.intersects(hostButton, point))
+                if(hostButton.isPressed(point))
                 {
                    touchTriggered = true;
                    isHostSelection = true;
                 }
-                else if(Rect.intersects(simpleButton, point))
+                else if(simpleButton.isPressed(point))
                 {
                     touchTriggered = true;
                 }
@@ -99,17 +96,14 @@ public class NetworkSearchScreen extends Screen implements Networked
 
         if(gameMultiplayer.getState() == NetworkedAndroidGame.State.CONNECTED && isSearching)
         {
-            //Log.d(LOG_TAG, "Still Connected.");
             if(gameMultiplayer.isConnectionConfirmed())
             {
-                //Toast.makeText(game.getActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
                 game.setScreen(new MultiGameScreen(game, gameMultiplayer.getHostStatus()));
             }
             else if(!didTryStart && isSearchingHost)
             {
                 didTryStart = true;
                 gameMultiplayer.startGameHosting();
-                Log.d(LOG_TAG, "Host trying to start");
             }
             else
             {
@@ -154,10 +148,8 @@ public class NetworkSearchScreen extends Screen implements Networked
         }
         else
         {
-            graphics.drawRectObject(hostButton, Color.GRAY);
-            graphics.drawRectObject(simpleButton, Color.GRAY);
-            graphics.drawString("Host", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10 * 3, textPaint);
-            graphics.drawString("Connect", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10 * 7, textPaint);
+            hostButton.display();
+            simpleButton.display();
             graphics.drawString("Select a Connection Option", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 10, textPaint);
         }
     }

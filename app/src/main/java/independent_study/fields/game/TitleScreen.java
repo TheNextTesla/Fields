@@ -51,21 +51,7 @@ public class TitleScreen extends Screen
         gameHeight = androidGraphics.getHeight();
 
         Resources resources = game.getResources();
-        //int resourceId = resources.getIdentifier("settings.png" , "", game.getActivity().getPackageName());
         Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.settings);
-
-        /*
-        StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < settingsBitmap.getWidth(); i++)
-        {
-            for(int j = 0; j < settingsBitmap.getHeight(); j++)
-            {
-                builder.append(settingsBitmap.getPixel(i, j));
-            }
-        }
-        */
-        Log.d(LOG_TAG, "Settings Bytes: " + settingsBitmap.getByteCount());
-        //Log.d(LOG_TAG, "Example Pixel: " + builder.toString());
         settingsImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
 
         singlePlayerButtonRect = new Rect(gameWidth / 3,
