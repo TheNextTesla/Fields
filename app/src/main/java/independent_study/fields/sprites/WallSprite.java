@@ -68,13 +68,13 @@ public class WallSprite extends Sprite
     @Override
     public void paint()
     {
-        if(positive)
+        if(Math.random() > 0.9)
         {
-            androidGraphics.drawRectObject(spriteBounds, Color.RED);
+            androidGraphics.drawRectObject(spriteBounds, Color.BLUE);
         }
         else
         {
-            androidGraphics.drawRectObject(spriteBounds, Color.BLUE);
+            androidGraphics.drawRectObject(spriteBounds, Color.DKGRAY);
         }
     }
 

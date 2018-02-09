@@ -1,10 +1,14 @@
 package independent_study.fields.sprites;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
 
+import independent_study.fields.R;
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
@@ -15,7 +19,7 @@ import independent_study.fields.game.Configuration;
 public class ObstacleSprite extends Sprite
 {
     //Constants of the Size and Game's Region
-    public static final int DEFAULT_OBSTACLE_WIDTH = 20;
+    public static final int DEFAULT_OBSTACLE_WIDTH = 10;
     public static final int DEFAULT_OBSTACLE_HEIGHT = 50;
     public static final int DEFAULT_OBSTACLE_SPEED = 2;
     public static final Rect gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
@@ -35,6 +39,8 @@ public class ObstacleSprite extends Sprite
         }
     }
 
+    protected static AndroidImage obstacleSpriteImage;
+
     //Instance Variables
     private int speed;
     private boolean wasTouched;
@@ -53,6 +59,12 @@ public class ObstacleSprite extends Sprite
         super(left, top, right, bottom, game);
         speed = (int) Math.round(DEFAULT_OBSTACLE_SPEED * (obstacleSpeed.value / 2.0));
         wasTouched = false;
+
+        if(obstacleSpriteImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile);
+            obstacleSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
     }
 
     public ObstacleSprite(int centerX, int centerY, int obstacleSpeed, Game game)
@@ -60,6 +72,12 @@ public class ObstacleSprite extends Sprite
         super(centerX - DEFAULT_OBSTACLE_WIDTH / 2, centerY + DEFAULT_OBSTACLE_HEIGHT / 2, centerX + DEFAULT_OBSTACLE_WIDTH / 2, centerY - DEFAULT_OBSTACLE_HEIGHT / 2, game);
         speed = obstacleSpeed;
         wasTouched = false;
+
+        if(obstacleSpriteImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile);
+            obstacleSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
     }
 
     /**
@@ -98,7 +116,8 @@ public class ObstacleSprite extends Sprite
     @Override
     public void paint()
     {
-        androidGraphics.drawRectObject(spriteBounds, Color.BLACK);
+        //androidGraphics.drawRectObject(spriteBounds, Color.BLACK);
+        androidGraphics.drawScaledImage(obstacleSpriteImage, spriteBounds);
     }
 
     /**

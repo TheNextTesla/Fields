@@ -1,6 +1,8 @@
 package independent_study.fields.game;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -9,11 +11,14 @@ import android.util.Log;
 
 import java.util.Locale;
 
+import independent_study.fields.R;
 import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
+import independent_study.fields.sprites.CloudSpriteManager;
 import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.ObstacleSpriteManager;
 import independent_study.fields.sprites.PlayerSprite;
@@ -41,6 +46,8 @@ public class GameScreen extends Screen
     protected SharedPreferences sharedPreferences;
     protected SharedPreferences.Editor settingsEditor;
     protected Paint scorePaint;
+    protected CloudSpriteManager cloudSpriteManager;
+    protected AndroidImage skyImage;
 
     public GameScreen(Game game)
     {
@@ -88,7 +95,9 @@ public class GameScreen extends Screen
         scorePaint.setAntiAlias(true);
         scorePaint.setColor(Color.WHITE);
 
-        graphics.clearScreen(Color.GRAY);
+        Bitmap settingsBitmap = BitmapFactory.decodeResource(game.getResources(), R.drawable.sky);
+        skyImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        cloudSpriteManager = new CloudSpriteManager(3.0, game);
 
         startTime = System.currentTimeMillis();
     }
@@ -150,7 +159,10 @@ public class GameScreen extends Screen
             }
         }
 
-        graphics.clearScreen(Color.GRAY);
+        //graphics.drawScaledImage(androidImage, gameRegion);
+        graphics.drawScaledImage(skyImage, gameRegion);
+        cloudSpriteManager.update();
+        cloudSpriteManager.paint();
 
         playerSprite.update();
         wallSpriteR.update();
@@ -201,9 +213,9 @@ public class GameScreen extends Screen
         //playerSprite.destroy(); - Player Sprite Destruction Triggers This
         wallSpriteR.destroy();
         wallSpriteL.destroy();
+        cloudSpriteManager.deleteAllClouds();
         if(obstacleSpriteManager != null)
             obstacleSpriteManager.deleteAllObstacles();
-        //fieldGame.clearGameScore();
     }
 
     public void backButton()

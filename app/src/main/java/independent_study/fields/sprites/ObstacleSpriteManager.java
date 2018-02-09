@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
