@@ -1,20 +1,16 @@
 package independent_study.fields.sprites;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
 
 import independent_study.fields.R;
-import independent_study.fields.framework.AndroidGame;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
-import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameOverScreen;
 import independent_study.fields.game.GameScreen;
 
@@ -67,7 +63,7 @@ public class PlayerSprite extends Sprite
         chargeState = CHARGE_STATE.POSITIVE;
         androidGame = game;
 
-        Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighterspr1);
+        Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighter);
         spriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
     }
 
