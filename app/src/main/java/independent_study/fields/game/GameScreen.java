@@ -18,6 +18,7 @@ import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
+import independent_study.fields.network.FieldGameMultiplayer;
 import independent_study.fields.sprites.CloudSpriteManager;
 import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.ObstacleSpriteManager;
@@ -220,6 +221,20 @@ public class GameScreen extends Screen
 
     public void backButton()
     {
+        dispose();
+        Sprite.destroyAll();
 
+        if(game instanceof FieldGame)
+        {
+            game.setScreen(new TitleScreen(game));
+        }
+        else if(game instanceof FieldGameMultiplayer)
+        {
+            game.getActivity().finish();
+        }
+        else
+        {
+            game.setScreen(new TitleScreen(game));
+        }
     }
 }

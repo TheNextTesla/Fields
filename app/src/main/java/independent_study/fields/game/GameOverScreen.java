@@ -12,6 +12,8 @@ import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.network.FieldGameMultiplayer;
+import independent_study.fields.network.MultiGameScreen;
+import independent_study.fields.network.NetworkSearchScreen;
 
 /**
  * Created by Blaine Huey on 11/14/2017.
@@ -82,7 +84,14 @@ public class GameOverScreen extends Screen
 
         if(touchTriggered)
         {
-            backButton();
+            if(game instanceof FieldGameMultiplayer)
+            {
+                game.setScreen(new NetworkSearchScreen(game));
+            }
+            else if(game instanceof FieldGame)
+            {
+                game.setScreen(new GameScreen(game));
+            }
         }
     }
 
