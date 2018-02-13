@@ -23,7 +23,7 @@ import independent_study.fields.sprites.Sprite;
  * Created by Blaine Huey on 12/11/2017.
  */
 
-public class MultiGameScreen extends GameScreen implements Networked
+public class MultiGameScreen extends GameScreen
 {
     private static final String GAME_OVER_STRING = "Game Over";
     private static final String LOG_TAG = "MultiGameScreen";
@@ -198,11 +198,6 @@ public class MultiGameScreen extends GameScreen implements Networked
     {
         dispose();
         game.getActivity().finish();
-    }
-
-    public void connected()
-    {
-        //Should Already Be Connected on Start
     }
 
     public void disconnected()
