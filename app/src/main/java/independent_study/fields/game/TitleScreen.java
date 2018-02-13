@@ -1,6 +1,5 @@
 package independent_study.fields.game;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import independent_study.fields.R;
 import independent_study.fields.framework.AndroidGraphics;
@@ -18,6 +16,7 @@ import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.network.FieldGameMultiplayer;
 import independent_study.fields.settings.SettingsActivity;
+import independent_study.fields.sprites.CloudSpriteManager;
 import independent_study.fields.ui.IconButton;
 import independent_study.fields.ui.TextBoxButton;
 
@@ -31,16 +30,20 @@ public class TitleScreen extends Screen
 
     private AndroidGraphics androidGraphics;
     private AndroidImage settingsImage;
+    private AndroidImage backgroundImage;
+    private CloudSpriteManager cloudSpriteManager;
 
     private Rect singlePlayerButtonRect;
     private Rect multiPlayerButtonRect;
     private Rect settingsButtonRect;
+    private Rect screenRect;
     private TextBoxButton singlePlayerButton;
     private TextBoxButton multiPlayerButton;
     private IconButton settingsButton;
     private int gameWidth;
     private int gameHeight;
     private Paint titlePaint;
+
 
     public TitleScreen(Game game)
     {
@@ -49,6 +52,10 @@ public class TitleScreen extends Screen
 
         gameWidth = androidGraphics.getWidth();
         gameHeight = androidGraphics.getHeight();
+
+        screenRect = new Rect(0, 0, gameWidth, gameHeight);
+
+        cloudSpriteManager = new CloudSpriteManager(5.0, game);
 
         Resources resources = game.getResources();
         Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.settings);
@@ -76,6 +83,9 @@ public class TitleScreen extends Screen
         titlePaint.setTextAlign(Paint.Align.CENTER);
         titlePaint.setAntiAlias(true);
         titlePaint.setColor(Color.WHITE);
+
+        Bitmap backgroundBitmap = BitmapFactory.decodeResource(game.getResources(), R.drawable.sky);
+        backgroundImage = new AndroidImage(backgroundBitmap, AndroidGraphics.ImageFormat.ARGB4444);
     }
 
     public void update(float deltaTime)
@@ -124,17 +134,15 @@ public class TitleScreen extends Screen
                 game.getActivity().startActivity(intent);
             }
         }
+
+        cloudSpriteManager.update();
     }
 
     public void paint(float deltaTime)
     {
-        androidGraphics.clearScreen(Color.BLUE);
-        //androidGraphics.drawRect(Configuration.GAME_WIDTH - 100, Configuration.GAME_HEIGHT / 4, 100, 0, Color.LTGRAY);
-        //androidGraphics.drawString("Settings",Configuration.GAME_WIDTH - 50, Configuration.GAME_HEIGHT / 8, settingsPaint);
+        androidGraphics.drawScaledImage(backgroundImage, screenRect);
+        cloudSpriteManager.paint();
         androidGraphics.drawString("Fields", Configuration.GAME_WIDTH / 2, Configuration.GAME_HEIGHT / 8, titlePaint);
-        //androidGraphics.drawRectObject(singlePlayerButton, Color.LTGRAY);
-        //androidGraphics.drawRectObject(multiPlayerButton, Color.LTGRAY);
-        //Log.d(LOG_TAG, "paint");
         multiPlayerButton.display();
         singlePlayerButton.display();
         settingsButton.display();
@@ -152,7 +160,7 @@ public class TitleScreen extends Screen
 
     public void dispose()
     {
-
+        cloudSpriteManager.deleteAllClouds();
     }
 
     public void backButton()

@@ -1,14 +1,16 @@
 package independent_study.fields.sprites;
 
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.util.Log;
 
-import independent_study.fields.framework.AndroidGame;
+import independent_study.fields.R;
+import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
 import independent_study.fields.game.Configuration;
-import independent_study.fields.game.FieldGame;
 import independent_study.fields.game.GameOverScreen;
 import independent_study.fields.game.GameScreen;
 
@@ -23,8 +25,8 @@ public class PlayerSprite extends Sprite
     public enum CHARGE_STATE {POSITIVE, NEUTRAL, NEGATIVE}
 
     //Constants of the PlayerSprite's Size
-    public static final int DEFAULT_PLAYER_WIDTH = 30;
-    public static final int DEFAULT_PLAYER_HEIGHT = 30;
+    public static final int DEFAULT_PLAYER_WIDTH = 50;
+    public static final int DEFAULT_PLAYER_HEIGHT = 50;
 
     //Constants of the PlayerSprite's Motion
     public static final double EPSILON_0 = 8.854187e-12;
@@ -38,6 +40,7 @@ public class PlayerSprite extends Sprite
     private double playerVelocity;
     private long lastPlayerUpdateTime;
     private CHARGE_STATE chargeState;
+    private AndroidImage spriteImage;
     private Game androidGame;
 
     /**
@@ -59,6 +62,9 @@ public class PlayerSprite extends Sprite
         lastPlayerUpdateTime = System.nanoTime();
         chargeState = CHARGE_STATE.POSITIVE;
         androidGame = game;
+
+        Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighter);
+        spriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
     }
 
     /**
@@ -155,6 +161,8 @@ public class PlayerSprite extends Sprite
     @Override
     public void paint()
     {
+        androidGraphics.drawScaledImage(spriteImage, spriteBounds);
+        /*
         if(chargeState == CHARGE_STATE.POSITIVE)
         {
             androidGraphics.drawRectObject(spriteBounds, Color.RED);
@@ -167,6 +175,7 @@ public class PlayerSprite extends Sprite
         {
             androidGraphics.drawRectObject(spriteBounds, Color.WHITE);
         }
+        */
     }
 
     /**
@@ -197,12 +206,13 @@ public class PlayerSprite extends Sprite
         {
             if(other instanceof ObjectiveSprite)
             {
-                    androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
-                    other.touched(this);
-                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
+                androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
+                other.touched(this);
+                Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
             }
             else
             {
+                other.touched(this);
                 wasTouched = true;
             }
             //If it is an Obstacle, Do Die

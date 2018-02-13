@@ -1,9 +1,12 @@
 package independent_study.fields.sprites;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Rect;
 
+import independent_study.fields.R;
 import independent_study.fields.framework.AndroidGraphics;
+import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.Game;
 import independent_study.fields.game.Configuration;
 
@@ -15,8 +18,9 @@ public class ObjectiveSprite extends ObstacleSprite
 {
     private static final int DEFAULT_POINTS = 10;
 
+    protected static AndroidImage objectiveSpriteImage;
+
     private int points;
-    private boolean wasPlayerTouched;
     private boolean didPlayerTouchedAnimation;
 
     /**
@@ -33,8 +37,13 @@ public class ObjectiveSprite extends ObstacleSprite
     {
         super(left, top, right, bottom, obstacleSpeed, game);
         points = pointValue;
-        wasPlayerTouched = false;
         didPlayerTouchedAnimation = false;
+
+        if(objectiveSpriteImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile_harmless);
+            objectiveSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
     }
 
     /**
@@ -48,6 +57,12 @@ public class ObjectiveSprite extends ObstacleSprite
     {
         super(topPixelStart, obstacleSpeed, game);
         points = pointValue;
+
+        if(objectiveSpriteImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile_harmless);
+            objectiveSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
     }
 
     /**
@@ -91,13 +106,13 @@ public class ObjectiveSprite extends ObstacleSprite
     @Override
     public void paint()
     {
-        if(!wasPlayerTouched)
+        if(!wasTouched)
         {
-            androidGraphics.drawRectObject(spriteBounds, Color.GREEN);
+            androidGraphics.drawScaledImage(objectiveSpriteImage, spriteBounds);
         }
         else
         {
-            androidGraphics.drawRect(0, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, Color.GREEN);
+            androidGraphics.drawRect(0, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, Color.RED);
             didPlayerTouchedAnimation = true;
         }
     }
@@ -109,11 +124,17 @@ public class ObjectiveSprite extends ObstacleSprite
     @Override
     public void touched(Sprite other)
     {
-        super.touched(other);
-
-        if(other instanceof PlayerSprite)
+        if(other instanceof WallSprite)
         {
-            wasPlayerTouched = true;
+            wasTouched = true;
+        }
+        else if(other instanceof ObstacleSprite)
+        {
+            wasTouched = true;
+        }
+        else if(other instanceof PlayerSprite)
+        {
+            wasTouched = true;
         }
     }
 

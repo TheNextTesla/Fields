@@ -77,9 +77,9 @@ public abstract class Sprite
      */
     public static void destroyAll()
     {
-        for(Sprite tempSprite : sprites)
+        for(int i = sprites.size() - 1; i >= 0; i--)
         {
-            tempSprite.destroy();
+            sprites.get(i).destroy();
         }
     }
 
