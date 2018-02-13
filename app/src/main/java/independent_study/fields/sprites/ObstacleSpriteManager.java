@@ -1,7 +1,5 @@
 package independent_study.fields.sprites;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import independent_study.fields.framework.Game;
@@ -99,10 +97,19 @@ public class ObstacleSpriteManager
         if(obstacles.size() == 0)
         {
             int randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
-            while(createNewCheckedObjectiveSprite(randomStartCoordinate));
+            while(createNewCheckedObstacleSprite(randomStartCoordinate))
+            {
+                randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+            }
 
-            randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
-            while(createNewCheckedObstacleSprite(randomStartCoordinate));
+            if(randomStateClustering > 0.5)
+            {
+                randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+                while (createNewCheckedObjectiveSprite(randomStartCoordinate))
+                {
+                    randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+                }
+            }
             return;
         }
 
@@ -112,9 +119,19 @@ public class ObstacleSpriteManager
 
             for(int i = 0; i < randomStateClustering / 3; i++)
             {
-                while(createNewCheckedObjectiveSprite(randomStartCoordinate));
-                randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
-                while(createNewCheckedObstacleSprite(randomStartCoordinate));
+                while(createNewCheckedObstacleSprite(randomStartCoordinate))
+                {
+                    randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+                }
+
+                if(randomStateClustering > 5)
+                {
+                    randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+                    while (createNewCheckedObjectiveSprite(randomStartCoordinate))
+                    {
+                        randomStartCoordinate = (int) (Math.random() * (Configuration.FIELD_WIDTH + 1));
+                    }
+                }
             }
         }
         else
@@ -158,7 +175,7 @@ public class ObstacleSpriteManager
         {
             tempObstacleSprite.destroy();
         }
-        return !wouldInterfere;
+        return wouldInterfere;
     }
 
     /**
@@ -196,7 +213,7 @@ public class ObstacleSpriteManager
         {
             tempObstacleSprite.destroy();
         }
-        return !wouldInterfere;
+        return wouldInterfere;
     }
 
     /**

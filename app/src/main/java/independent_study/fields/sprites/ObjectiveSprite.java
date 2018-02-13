@@ -41,7 +41,7 @@ public class ObjectiveSprite extends ObstacleSprite
 
         if(objectiveSpriteImage == null)
         {
-            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile_harmless);
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.points);
             objectiveSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
     }
@@ -60,7 +60,7 @@ public class ObjectiveSprite extends ObstacleSprite
 
         if(objectiveSpriteImage == null)
         {
-            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile_harmless);
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.points);
             objectiveSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
     }
