@@ -16,7 +16,7 @@ import independent_study.fields.ui.TextBoxButton;
  * Created by Blaine Huey on 12/11/2017.
  */
 
-public class NetworkSearchScreen extends Screen implements Networked
+public class NetworkSearchScreen extends Screen
 {
     private static final String LOG_TAG = "NetworkSearchScreen";
 
