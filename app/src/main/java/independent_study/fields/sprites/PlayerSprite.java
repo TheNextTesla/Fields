@@ -206,12 +206,13 @@ public class PlayerSprite extends Sprite
         {
             if(other instanceof ObjectiveSprite)
             {
-                    androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
-                    other.touched(this);
-                    Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
+                androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
+                other.touched(this);
+                Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
             }
             else
             {
+                other.touched(this);
                 wasTouched = true;
             }
             //If it is an Obstacle, Do Die

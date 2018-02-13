@@ -40,10 +40,11 @@ public class ObstacleSprite extends Sprite
     }
 
     protected static AndroidImage obstacleSpriteImage;
+    protected static AndroidImage obstacleExplosionImage;
 
     //Instance Variables
     private int speed;
-    private boolean wasTouched;
+    protected boolean wasTouched;
 
     /**
      * Main Constructor for ObstacleSprite
@@ -65,6 +66,12 @@ public class ObstacleSprite extends Sprite
             Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile);
             obstacleSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
+
+        if(obstacleExplosionImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.explosion);
+            obstacleExplosionImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
     }
 
     public ObstacleSprite(int centerX, int centerY, int obstacleSpeed, Game game)
@@ -77,6 +84,12 @@ public class ObstacleSprite extends Sprite
         {
             Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.missile);
             obstacleSpriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
+
+        if(obstacleExplosionImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.explosion);
+            obstacleExplosionImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
     }
 
@@ -116,8 +129,18 @@ public class ObstacleSprite extends Sprite
     @Override
     public void paint()
     {
-        //androidGraphics.drawRectObject(spriteBounds, Color.BLACK);
-        androidGraphics.drawScaledImage(obstacleSpriteImage, spriteBounds);
+        if(!wasTouched)
+        {
+            androidGraphics.drawScaledImage(obstacleSpriteImage, spriteBounds);
+        }
+        else
+        {
+            Rect largeRect = new Rect(spriteBounds.left - spriteBounds.width(),
+                    spriteBounds.top - spriteBounds.height(),
+                    spriteBounds.right + spriteBounds.width(),
+                    spriteBounds.bottom + spriteBounds.height());
+            androidGraphics.drawScaledImage(obstacleExplosionImage, largeRect);
+        }
     }
 
     /**
@@ -145,6 +168,14 @@ public class ObstacleSprite extends Sprite
         else if(other instanceof ObstacleSprite)
         {
             wasTouched = true;
+        }
+        else if(other instanceof PlayerSprite)
+        {
+            Rect largeRect = new Rect(spriteBounds.centerX() - spriteBounds.height() * 3,
+                    spriteBounds.centerY() - spriteBounds.height() * 3,
+                    spriteBounds.centerX() + spriteBounds.height() * 3,
+                    spriteBounds.centerY() + spriteBounds.height() * 3);
+            androidGraphics.drawScaledImage(obstacleExplosionImage, largeRect);
         }
     }
 
