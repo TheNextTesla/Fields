@@ -13,7 +13,9 @@ import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.AndroidInput;
 import independent_study.fields.framework.Game;
 import independent_study.fields.framework.Screen;
+import independent_study.fields.sprites.ObstacleSprite;
 import independent_study.fields.sprites.PlayerSprite;
+import independent_study.fields.sprites.Sprite;
 import independent_study.fields.sprites.WallSprite;
 import independent_study.fields.ui.TextBoxButton;
 
@@ -113,6 +115,7 @@ public class TutorialScreen extends Screen
                         "You Will DIE.  Instantly.");
             case 4:
                 playerSprite.setLocationX(graphics.getWidth() / 5 * 2);
+                new ObstacleSprite(graphics.getWidth() / 2, graphics.getHeight() / 2, 0, game).paint();
                 textBox.setText("Dodge the Incoming Missiles\n" +
                         "Occasionally, there will be a green 'Good' Missile");
                 break;
@@ -139,11 +142,11 @@ public class TutorialScreen extends Screen
 
     public void dispose()
     {
-
+        Sprite.destroyAll();
     }
 
     public void backButton()
     {
-
+        game.setScreen(new TitleScreen(game));
     }
 }

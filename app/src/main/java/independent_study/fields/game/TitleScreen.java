@@ -161,6 +161,7 @@ public class TitleScreen extends Screen
         multiPlayerButton.display();
         singlePlayerButton.display();
         settingsButton.display();
+        tutorialButton.display();
     }
 
     public void pause()
