@@ -36,10 +36,12 @@ public class TitleScreen extends Screen
     private Rect singlePlayerButtonRect;
     private Rect multiPlayerButtonRect;
     private Rect settingsButtonRect;
+    private Rect tutorialButtonRect;
     private Rect screenRect;
     private TextBoxButton singlePlayerButton;
     private TextBoxButton multiPlayerButton;
     private IconButton settingsButton;
+    private TextBoxButton tutorialButton;
     private int gameWidth;
     private int gameHeight;
     private Paint titlePaint;
@@ -71,12 +73,15 @@ public class TitleScreen extends Screen
                 gameHeight / 5 * 4);
         settingsButtonRect = new Rect(gameWidth - 50,
                 50, gameWidth - 10, 10);
+        tutorialButtonRect = new Rect(50, 50, 0,0);
 
         singlePlayerButton = new TextBoxButton(singlePlayerButtonRect, Color.LTGRAY,
                 "Single Player", 20, Color.WHITE, game);
         multiPlayerButton = new TextBoxButton(multiPlayerButtonRect, Color.LTGRAY,
                 "Multi Player", 20, Color.WHITE, game);
         settingsButton = new IconButton(settingsButtonRect, settingsImage, game);
+        tutorialButton = new TextBoxButton(tutorialButtonRect, Color.LTGRAY,
+                    "T", 20, Color.WHITE, game);
 
         titlePaint = new Paint();
         titlePaint.setTextSize(50);
@@ -93,6 +98,7 @@ public class TitleScreen extends Screen
         boolean isSelected = false;
         boolean isSettings = false;
         boolean isSinglePlayer = false;
+        boolean isTutorial = false;
 
         for(AndroidInput.TouchEvent event : game.getInput().getTouchEvents())
         {
@@ -114,6 +120,11 @@ public class TitleScreen extends Screen
                 {
                     isSelected = true;
                 }
+                else if(tutorialButton.isPressed(point))
+                {
+                    isSelected = true;
+                    isTutorial = true;
+                }
             }
         }
 
@@ -127,6 +138,10 @@ public class TitleScreen extends Screen
             else if(isSinglePlayer)
             {
                 game.setScreen(new GameScreen(game));
+            }
+            else if(isTutorial)
+            {
+                game.setScreen(new TutorialScreen(game));
             }
             else
             {

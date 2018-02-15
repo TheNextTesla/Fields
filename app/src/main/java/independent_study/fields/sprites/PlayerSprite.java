@@ -39,6 +39,7 @@ public class PlayerSprite extends Sprite
     private boolean isPositiveLeft;
     private double playerVelocity;
     private long lastPlayerUpdateTime;
+    private CHARGE_STATE lastExternalSetChargeState;
     private CHARGE_STATE chargeState;
     private AndroidImage spriteImage;
     private Game androidGame;
@@ -94,7 +95,10 @@ public class PlayerSprite extends Sprite
      */
     public void setChargeState(CHARGE_STATE newChargeState)
     {
+        if(lastExternalSetChargeState == newChargeState)
+            return;
         chargeState = newChargeState;
+        lastExternalSetChargeState = chargeState;
     }
 
     /**
@@ -207,6 +211,16 @@ public class PlayerSprite extends Sprite
             if(other instanceof ObjectiveSprite)
             {
                 androidGame.incrementObjectiveScore(((ObjectiveSprite) other).getPoints());
+
+                if(chargeState == CHARGE_STATE.POSITIVE)
+                {
+                    chargeState = CHARGE_STATE.NEGATIVE;
+                }
+                else if(chargeState == CHARGE_STATE.NEGATIVE);
+                {
+                    chargeState = CHARGE_STATE.POSITIVE;
+                }
+
                 other.touched(this);
                 Log.d(LOG_TAG, "Points Gained From Objective - Current Score : " + androidGame.getGameScore());
             }

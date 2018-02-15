@@ -14,6 +14,7 @@ public class TextBoxButton extends BoxButton
 {
     private Paint textPaint;
     private String textContent;
+    private int numLines;
     private int textHeight;
 
     public TextBoxButton(Rect bounds, int backgroundColor, String text, int textSize, int textColor, Game game)
@@ -26,6 +27,7 @@ public class TextBoxButton extends BoxButton
         textPaint.setColor(textColor);
         textContent = text;
         textHeight = textSize / 3;
+        numLines = text.split("\n").length;
     }
 
     public TextBoxButton(int left, int top, int right, int bottom, int backgroundColor, String text, int textSize, int textColor, Game game)
@@ -37,13 +39,31 @@ public class TextBoxButton extends BoxButton
         textPaint.setAntiAlias(true);
         textPaint.setColor(textColor);
         textContent = text;
-        textHeight = textSize / 2;
+        textHeight = textSize / 3;
+        numLines = text.split("\n").length;
     }
 
     @Override
     public void display()
     {
         super.display();
-        buttonGame.getGraphics().drawString(textContent, buttonBounds.centerX(), buttonBounds.centerY() + textHeight, textPaint);
+        if(numLines > 1)
+        {
+            buttonGame.getGraphics().drawString(textContent, buttonBounds.centerX(),
+                    buttonBounds.centerY() + textHeight, textPaint);
+        }
+        else
+        {
+            for(int i = 0; i < numLines; i++)
+            {
+                buttonGame.getGraphics().drawString(textContent.split("\n")[i],
+                        buttonBounds.centerX(), buttonBounds.top + buttonBounds.height() * (i + 1) / (numLines + 1), textPaint);
+            }
+        }
+    }
+
+    public void setText(String text)
+    {
+        textContent = text;
     }
 }

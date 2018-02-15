@@ -125,8 +125,20 @@ public abstract class Sprite
         return spriteBounds.centerX();
     }
 
+    public void setLocationX(int newX)
+    {
+        spriteBounds.offsetTo(newX - spriteBounds.width() / 2, spriteBounds.top);
+    }
+
+    public void setLocationY(int newY)
+    {
+        spriteBounds.offsetTo(spriteBounds.left, newY - spriteBounds.height() / 2);
+    }
+
     public int getLocationY()
     {
         return spriteBounds.centerY();
     }
+
+
 }
