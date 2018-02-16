@@ -12,6 +12,9 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public abstract class AndroidGame extends Activity implements Game
 {
     protected AndroidFastRenderView renderView;

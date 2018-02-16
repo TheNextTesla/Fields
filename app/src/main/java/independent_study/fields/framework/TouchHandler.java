@@ -4,6 +4,9 @@ import android.view.View.OnTouchListener;
 
 import java.util.List;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public interface TouchHandler extends OnTouchListener {
     public boolean isTouchDown(int pointer);
     

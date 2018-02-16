@@ -6,6 +6,9 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class SingleTouchHandler implements TouchHandler
 {
     boolean isTouched;

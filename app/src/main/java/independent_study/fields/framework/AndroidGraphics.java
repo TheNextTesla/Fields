@@ -13,6 +13,9 @@ import android.graphics.Rect;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidGraphics
 {
     public enum ImageFormat

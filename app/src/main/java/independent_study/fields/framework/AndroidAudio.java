@@ -8,6 +8,9 @@ import android.media.SoundPool;
 
 import java.io.IOException;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidAudio
 {
     AssetManager assets;

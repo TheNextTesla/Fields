@@ -2,11 +2,9 @@ package independent_study.fields.framework;
 
 import android.app.Activity;
 import android.content.res.Resources;
-
 /**
- * Created by Blaine Huey on 12/12/2017.
+ * Derived from KiloBolt Apache-Licensed Code
  */
-
 public interface Game
 {
     AndroidInput getInput();

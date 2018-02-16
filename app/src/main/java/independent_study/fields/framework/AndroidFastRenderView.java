@@ -7,6 +7,9 @@ import android.graphics.Rect;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidFastRenderView extends SurfaceView implements Runnable
 {
     Activity game;

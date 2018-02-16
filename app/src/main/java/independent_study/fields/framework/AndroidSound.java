@@ -2,6 +2,9 @@ package independent_study.fields.framework;
 
 import android.media.SoundPool;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidSound
 {
     int soundId;

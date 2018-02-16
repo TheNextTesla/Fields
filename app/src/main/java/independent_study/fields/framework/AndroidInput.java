@@ -7,6 +7,9 @@ import android.view.View;
 
 import java.util.List;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidInput
 {
     TouchHandler touchHandler;

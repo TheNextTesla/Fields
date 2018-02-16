@@ -2,6 +2,9 @@ package independent_study.fields.framework;
 
 import android.graphics.Bitmap;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidImage
 {
     Bitmap bitmap;

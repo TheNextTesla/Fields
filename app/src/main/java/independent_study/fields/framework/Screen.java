@@ -1,5 +1,8 @@
 package independent_study.fields.framework;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public abstract class Screen
 {
     protected final Game game;

@@ -3,6 +3,9 @@ package independent_study.fields.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class Pool<T>
 {
     public interface PoolObjectFactory<T>

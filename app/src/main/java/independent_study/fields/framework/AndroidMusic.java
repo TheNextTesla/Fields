@@ -9,6 +9,9 @@ import android.media.MediaPlayer.OnVideoSizeChangedListener;
 
 import java.io.IOException;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class AndroidMusic implements OnCompletionListener, OnSeekCompleteListener, OnPreparedListener, OnVideoSizeChangedListener
 {
     MediaPlayer mediaPlayer;

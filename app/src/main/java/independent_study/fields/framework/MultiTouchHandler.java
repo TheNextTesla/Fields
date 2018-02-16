@@ -6,6 +6,9 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Derived from KiloBolt Apache-Licensed Code
+ */
 public class MultiTouchHandler implements TouchHandler
 {
 	private static final int MAX_TOUCHPOINTS = 10;
