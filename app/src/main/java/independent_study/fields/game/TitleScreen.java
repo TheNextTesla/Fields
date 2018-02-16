@@ -106,7 +106,7 @@ public class TitleScreen extends Screen
             {
                 Rect point = new Rect(event.x, event.y, event.x, event.y);
 
-                if(event.x > Configuration.GAME_WIDTH - 100 && event.y < Configuration.GAME_HEIGHT / 4)
+                if(settingsButton.isPressed(point))
                 {
                     isSelected = true;
                     isSettings = true;
