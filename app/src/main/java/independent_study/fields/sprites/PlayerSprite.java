@@ -216,7 +216,7 @@ public class PlayerSprite extends Sprite
                 {
                     chargeState = CHARGE_STATE.NEGATIVE;
                 }
-                else if(chargeState == CHARGE_STATE.NEGATIVE);
+                else if(chargeState == CHARGE_STATE.NEGATIVE)
                 {
                     chargeState = CHARGE_STATE.POSITIVE;
                 }
