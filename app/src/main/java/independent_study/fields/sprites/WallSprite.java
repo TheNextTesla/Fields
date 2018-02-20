@@ -68,7 +68,7 @@ public class WallSprite extends Sprite
     @Override
     public void paint()
     {
-        if(Math.random() > 0.9)
+        if(!positive)
         {
             androidGraphics.drawRectObject(spriteBounds, Color.BLUE);
         }
@@ -110,4 +110,15 @@ public class WallSprite extends Sprite
     {
         super.destroy();
     }
+
+    public void swapCharge()
+    {
+        positive = !positive;
+    }
+
+    public boolean getCharge()
+    {
+        return positive;
+    }
+
 }

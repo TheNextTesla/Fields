@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -158,6 +159,24 @@ public class GameScreen extends Screen
                 playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.POSITIVE);
                 wasPositiveLast = true;
             }
+        }
+
+        if(playerSprite.getChargeState() == PlayerSprite.CHARGE_STATE.POSITIVE)
+        {
+            if(wallSpriteR.getCharge())
+                wallSpriteR.swapCharge();
+        }
+        else if(playerSprite.getChargeState() == PlayerSprite.CHARGE_STATE.NEGATIVE)
+        {
+            if(wallSpriteL.getCharge())
+                wallSpriteL.swapCharge();
+        }
+        else
+        {
+            if(!wallSpriteL.getCharge())
+                wallSpriteL.swapCharge();
+            if(!wallSpriteR.getCharge())
+                wallSpriteR.swapCharge();
         }
 
         //graphics.drawScaledImage(androidImage, gameRegion);
