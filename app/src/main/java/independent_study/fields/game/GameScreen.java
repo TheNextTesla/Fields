@@ -152,12 +152,10 @@ public class GameScreen extends Screen
             if(wasPositiveLast)
             {
                 playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.NEGATIVE);
-                wasPositiveLast = false;
             }
             else
             {
                 playerSprite.setChargeState(PlayerSprite.CHARGE_STATE.POSITIVE);
-                wasPositiveLast = true;
             }
         }
 
@@ -165,11 +163,13 @@ public class GameScreen extends Screen
         {
             if(wallSpriteR.getCharge())
                 wallSpriteR.swapCharge();
+            wasPositiveLast = true;
         }
         else if(playerSprite.getChargeState() == PlayerSprite.CHARGE_STATE.NEGATIVE)
         {
             if(wallSpriteL.getCharge())
                 wallSpriteL.swapCharge();
+            wasPositiveLast = false;
         }
         else
         {
