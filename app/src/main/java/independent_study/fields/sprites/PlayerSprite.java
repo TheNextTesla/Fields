@@ -34,6 +34,10 @@ public class PlayerSprite extends Sprite
     public static final double PLAYER_MASS = 1.0; //Old 7.8
     public static final double PLATE_CHARGE_DENSITY = 5.8e-8;
 
+    private static AndroidImage spriteImage;
+    private static AndroidImage spriteImageRight;
+    private static AndroidImage spriteImageLeft;
+
     //Instance Variable of Motion and State
     private boolean wasTouched;
     private boolean isPositiveLeft;
@@ -41,7 +45,7 @@ public class PlayerSprite extends Sprite
     private long lastPlayerUpdateTime;
     private CHARGE_STATE lastExternalSetChargeState;
     private CHARGE_STATE chargeState;
-    private AndroidImage spriteImage;
+    private Rect sideSpriteBounds;
     private Game androidGame;
 
     /**
@@ -64,8 +68,19 @@ public class PlayerSprite extends Sprite
         chargeState = CHARGE_STATE.POSITIVE;
         androidGame = game;
 
-        Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighter);
-        spriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        //sideSpriteBounds = new Rect(left - spriteBounds.width() / 8, top, right + spriteBounds.width() / 8, bottom);
+        sideSpriteBounds = spriteBounds;
+        sideSpriteBounds.sort();
+
+        if(spriteImage == null)
+        {
+            Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighter);
+            spriteImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+            settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighter_right_2);
+            spriteImageRight = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+            settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.fighter_left_2);
+            spriteImageLeft = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
+        }
     }
 
     /**
@@ -149,6 +164,7 @@ public class PlayerSprite extends Sprite
             }
 
             spriteBounds.offset((int) Math.round(playerVelocity * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0), 0);
+            sideSpriteBounds.offset((int) Math.round(playerVelocity * (System.nanoTime() - lastPlayerUpdateTime) / 1_000_000_000.0), 0);
             lastPlayerUpdateTime = System.nanoTime();
             //Log.d(LOG_TAG, "Velocity: " + Double.toString(playerVelocity));
         }
@@ -165,21 +181,18 @@ public class PlayerSprite extends Sprite
     @Override
     public void paint()
     {
-        androidGraphics.drawScaledImage(spriteImage, spriteBounds);
-        /*
         if(chargeState == CHARGE_STATE.POSITIVE)
         {
-            androidGraphics.drawRectObject(spriteBounds, Color.RED);
+            androidGraphics.drawScaledImage(spriteImageRight, sideSpriteBounds);
         }
         else if(chargeState == CHARGE_STATE.NEGATIVE)
         {
-            androidGraphics.drawRectObject(spriteBounds, Color.BLUE);
+            androidGraphics.drawScaledImage(spriteImageLeft, sideSpriteBounds);
         }
         else
         {
-            androidGraphics.drawRectObject(spriteBounds, Color.WHITE);
+            androidGraphics.drawScaledImage(spriteImage, spriteBounds);
         }
-        */
     }
 
     /**
