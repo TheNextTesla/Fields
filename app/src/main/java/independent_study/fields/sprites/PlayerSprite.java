@@ -203,7 +203,14 @@ public class PlayerSprite extends Sprite
     @Override
     public boolean isTouching(Sprite other)
     {
-        return Rect.intersects(other.spriteBounds, this.spriteBounds);
+        if(chargeState == CHARGE_STATE.NEUTRAL)
+        {
+            return Rect.intersects(other.spriteBounds, this.spriteBounds);
+        }
+        else
+        {
+            return Rect.intersects(other.spriteBounds, sideSpriteBounds);
+        }
     }
 
     /**

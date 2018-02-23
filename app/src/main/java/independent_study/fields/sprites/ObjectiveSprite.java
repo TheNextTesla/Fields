@@ -112,7 +112,7 @@ public class ObjectiveSprite extends ObstacleSprite
         }
         else
         {
-            androidGraphics.drawRect(0, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, Color.RED);
+            androidGraphics.drawRect(0, 0, Configuration.GAME_WIDTH, Configuration.GAME_HEIGHT, Color.BLUE);
             didPlayerTouchedAnimation = true;
         }
     }

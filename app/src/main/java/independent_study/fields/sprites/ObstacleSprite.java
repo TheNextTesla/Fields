@@ -18,6 +18,8 @@ import independent_study.fields.game.Configuration;
 
 public class ObstacleSprite extends Sprite
 {
+    public static final String LOG_TAG = "ObstacleSprite";
+
     //Constants of the Size and Game's Region
     public static final int DEFAULT_OBSTACLE_WIDTH = 10;
     public static final int DEFAULT_OBSTACLE_HEIGHT = 50;
@@ -115,6 +117,15 @@ public class ObstacleSprite extends Sprite
     {
         if(!Rect.intersects(spriteBounds, gameRegion) || wasTouched)
         {
+            if(!Rect.intersects(spriteBounds, gameRegion))
+            {
+                Log.d(LOG_TAG, "Is Outside of Game Region");
+            }
+            else
+            {
+                Log.d(LOG_TAG, "Was Touched By Other Sprite");
+            }
+
             destroy();
         }
         else
