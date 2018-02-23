@@ -231,17 +231,18 @@ public class GameScreen extends Screen
     public void dispose()
     {
         //playerSprite.destroy(); - Player Sprite Destruction Triggers This
+        Log.d(LOG_TAG, "Game Disposed");
         wallSpriteR.destroy();
         wallSpriteL.destroy();
         cloudSpriteManager.deleteAllClouds();
         if(obstacleSpriteManager != null)
             obstacleSpriteManager.deleteAllObstacles();
+        Sprite.destroyAll();
     }
 
     public void backButton()
     {
         dispose();
-        Sprite.destroyAll();
 
         if(game instanceof FieldGame)
         {
