@@ -50,7 +50,6 @@ public class CloudSprite extends Sprite
     @Override
     public void update(float deltaTime)
     {
-        Log.d("CloudSprite", " " + deltaTime);
         movement += CLOUD_SPEED * deltaTime / 100 * Configuration.TICKS_PER_SECOND;
         if(movement > 1)
         {
