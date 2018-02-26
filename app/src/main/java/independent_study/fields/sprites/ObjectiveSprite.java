@@ -87,11 +87,11 @@ public class ObjectiveSprite extends ObstacleSprite
      * Updates Unless It Gave a Death Animate
      */
     @Override
-    public void update()
+    public void update(float deltaTime)
     {
         if(!didPlayerTouchedAnimation)
         {
-            super.update();
+            super.update(deltaTime);
         }
         else
         {

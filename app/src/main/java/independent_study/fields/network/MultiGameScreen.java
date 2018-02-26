@@ -109,7 +109,7 @@ public class MultiGameScreen extends GameScreen
         if(isHost)
         {
             obstacleSpriteManager.updateGenerateObstacleAndObjective();
-            obstacleSpriteManager.updateAllObstacles();
+            obstacleSpriteManager.updateAllObstacles(deltaTime);
         }
 
         receivedString = retrieveNetworkInformation();
@@ -124,9 +124,9 @@ public class MultiGameScreen extends GameScreen
             }
         }
 
-        playerSprite.update();
-        wallSpriteR.update();
-        wallSpriteL.update();
+        playerSprite.update(deltaTime);
+        wallSpriteR.update(deltaTime);
+        wallSpriteL.update(deltaTime);
 
         Sprite.touchCheckAll();
 

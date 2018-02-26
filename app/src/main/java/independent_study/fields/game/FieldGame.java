@@ -1,6 +1,7 @@
 package independent_study.fields.game;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -28,6 +29,8 @@ public class FieldGame extends AndroidGame
         objectiveScore = 0;
         timeScore = 0;
 
+        //https://developers.google.com/admob/android/quick-start
+        //https://developers.google.com/admob/android/interstitial
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
 
         mInterstitialAd = new InterstitialAd(this);
@@ -51,7 +54,14 @@ public class FieldGame extends AndroidGame
             @Override
             public void onAdOpened()
             {
-
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Toast.makeText(getApplicationContext(), "Ad Opened", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override

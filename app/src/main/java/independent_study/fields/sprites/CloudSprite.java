@@ -10,6 +10,7 @@ import independent_study.fields.R;
 import independent_study.fields.framework.AndroidGraphics;
 import independent_study.fields.framework.AndroidImage;
 import independent_study.fields.framework.Game;
+import independent_study.fields.game.Configuration;
 
 /**
  * Created by Blaine Huey on 2/9/2018.
@@ -17,9 +18,11 @@ import independent_study.fields.framework.Game;
 
 public class CloudSprite extends Sprite
 {
-    public static final int CLOUD_SPEED = 1;
+    public static final int CLOUD_SPEED = 3;
 
     private static AndroidImage cloudImage;
+
+    private double movement;
 
     public CloudSprite(int left, int top, int right, int bottom, Game game)
     {
@@ -30,6 +33,8 @@ public class CloudSprite extends Sprite
             Bitmap settingsBitmap = BitmapFactory.decodeResource(game.getResources(), R.drawable.cloud);
             cloudImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
+
+        movement = 0;
 
         Log.d("Cloud", "Created");
     }
@@ -43,9 +48,16 @@ public class CloudSprite extends Sprite
      * Sprite Update Method
      */
     @Override
-    public void update()
+    public void update(float deltaTime)
     {
-        spriteBounds.offset(0, CLOUD_SPEED);
+        Log.d("CloudSprite", " " + deltaTime);
+        movement += CLOUD_SPEED * deltaTime / 100 * Configuration.TICKS_PER_SECOND;
+        if(movement > 1)
+        {
+            spriteBounds.offset(0, (int) movement);
+            movement = movement % 1;
+        }
+        //spriteBounds.offset(0, CLOUD_SPEED * (int) Math.round(deltaTime / 100 * Configuration.TICKS_PER_SECOND));
     }
 
     /**

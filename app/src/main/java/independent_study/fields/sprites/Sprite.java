@@ -41,26 +41,6 @@ public abstract class Sprite
     }
 
     /**
-     * Calls the Update Method of Every Sprite
-     * Currently Unused due to the sprite self-terminating during the update
-     */
-    public static void updateAll()
-    {
-        for(int i = sprites.size() - 1; i >= 0; i--)
-        {
-            for(int j = 0; j < i; j++)
-            {
-                if(sprites.get(i).isTouching(sprites.get(j)))
-                {
-                    sprites.get(i).touched(sprites.get(j));
-                }
-            }
-
-            sprites.get(i).update();
-        }
-    }
-
-    /**
      * Calls the Paint Method of All Sprites
      */
     public static void paintAll()
@@ -106,7 +86,7 @@ public abstract class Sprite
     }
 
     //Abstract Required Methods For Implementation
-    public abstract void update();
+    public abstract void update(float deltaTime);
     public abstract void paint();
     public abstract boolean isTouching(Sprite other);
     public abstract void touched(Sprite other);

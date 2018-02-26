@@ -56,7 +56,7 @@ public class WallSprite extends Sprite
      * Walls Don't Move...
      */
     @Override
-    public void update()
+    public void update(float deltaTime)
     {
 
     }

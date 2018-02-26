@@ -150,7 +150,7 @@ public class TitleScreen extends Screen
             }
         }
 
-        cloudSpriteManager.update();
+        cloudSpriteManager.update(deltaTime);
     }
 
     public void paint(float deltaTime)

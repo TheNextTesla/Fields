@@ -181,14 +181,14 @@ public class GameScreen extends Screen
 
         //graphics.drawScaledImage(androidImage, gameRegion);
         graphics.drawScaledImage(skyImage, gameRegion);
-        cloudSpriteManager.update();
+        cloudSpriteManager.update(deltaTime);
         cloudSpriteManager.paint();
 
-        playerSprite.update();
-        wallSpriteR.update();
-        wallSpriteL.update();
+        playerSprite.update(deltaTime);
+        wallSpriteR.update(deltaTime);
+        wallSpriteL.update(deltaTime);
         obstacleSpriteManager.updateGenerateObstacleAndObjective();
-        obstacleSpriteManager.updateAllObstacles();
+        obstacleSpriteManager.updateAllObstacles(deltaTime);
         Sprite.touchCheckAll();
 
         System.gc();

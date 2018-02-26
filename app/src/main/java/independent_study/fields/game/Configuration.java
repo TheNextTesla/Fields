@@ -8,8 +8,9 @@ public final class Configuration
 {
     public static final int GAME_WIDTH = 800;
     public static final int GAME_HEIGHT = 480;
-
     public static final int FIELD_WIDTH = 700;
+
+    public static final int TICKS_PER_SECOND = 20;
 
     public static final String HIGH_SCORE_TAG = "high_score";
     public static final String OBSTACLE_VELOCITY_TAG = "obstacle_speed";

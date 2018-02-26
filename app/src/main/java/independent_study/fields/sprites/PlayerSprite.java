@@ -139,7 +139,7 @@ public class PlayerSprite extends Sprite
      * Updates the Positioning of the Player
      */
     @Override
-    public void update()
+    public void update(float deltaTime)
     {
         if(!wasTouched)
         {

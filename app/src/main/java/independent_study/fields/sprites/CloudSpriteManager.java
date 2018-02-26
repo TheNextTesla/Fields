@@ -27,7 +27,7 @@ public class CloudSpriteManager
         createNewCloud();
     }
 
-    public void update()
+    public void update(float deltaTime)
     {
         if((System.currentTimeMillis() - milliTime) > secondsPerCloud * 1000)
         {
@@ -43,7 +43,7 @@ public class CloudSpriteManager
             }
             else
             {
-                cloudSprites.get(i).update();
+                cloudSprites.get(i).update(deltaTime);
             }
         }
     }

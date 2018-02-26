@@ -23,7 +23,7 @@ public class ObstacleSprite extends Sprite
     //Constants of the Size and Game's Region
     public static final int DEFAULT_OBSTACLE_WIDTH = 10;
     public static final int DEFAULT_OBSTACLE_HEIGHT = 50;
-    public static final int DEFAULT_OBSTACLE_SPEED = 2;
+    public static final int DEFAULT_OBSTACLE_SPEED = 6;
     public static final Rect gameRegion = new Rect((Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2, 0,
         (Configuration.FIELD_WIDTH + (Configuration.GAME_WIDTH - Configuration.FIELD_WIDTH) / 2), Configuration.GAME_HEIGHT);
 
@@ -46,6 +46,7 @@ public class ObstacleSprite extends Sprite
 
     //Instance Variables
     private int speed;
+    protected double movement;
     protected boolean wasTouched;
 
     /**
@@ -74,6 +75,8 @@ public class ObstacleSprite extends Sprite
             Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.explosion);
             obstacleExplosionImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
+
+        movement = 0;
     }
 
     public ObstacleSprite(int centerX, int centerY, int obstacleSpeed, Game game)
@@ -93,6 +96,8 @@ public class ObstacleSprite extends Sprite
             Bitmap settingsBitmap = BitmapFactory.decodeResource(resources, R.drawable.explosion);
             obstacleExplosionImage = new AndroidImage(settingsBitmap, AndroidGraphics.ImageFormat.ARGB4444);
         }
+
+        movement = 0;
     }
 
     /**
@@ -113,7 +118,7 @@ public class ObstacleSprite extends Sprite
      * Moves the Object Until It Leaves the Game Area
      */
     @Override
-    public void update()
+    public void update(float deltaTime)
     {
         if(!Rect.intersects(spriteBounds, gameRegion) || wasTouched)
         {
@@ -130,7 +135,12 @@ public class ObstacleSprite extends Sprite
         }
         else
         {
-            spriteBounds.offset(0, speed);
+            movement += speed * deltaTime / 100 * Configuration.TICKS_PER_SECOND;
+            if(movement > 1)
+            {
+                spriteBounds.offset(0, (int) movement);
+                movement = movement % 1;
+            }
         }
     }
 

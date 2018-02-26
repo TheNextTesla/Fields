@@ -228,11 +228,11 @@ public class ObstacleSpriteManager
     /**
      * Runs the Update Method on All Known Obstacles
      */
-    public void updateAllObstacles()
+    public void updateAllObstacles(float deltaTime)
     {
         for(ObstacleSprite obstacleSprite : getObstacles())
         {
-            obstacleSprite.update();
+            obstacleSprite.update(deltaTime);
         }
     }
 
